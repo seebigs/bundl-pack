@@ -1,0 +1,6 @@
+
+handle es6 imports https://www.npmjs.com/package/detective-es6
+
+compare against rollup https://github.com/rollup/rollup/wiki/JavaScript-API
+
+compare against browserify + babel = es6 imports
