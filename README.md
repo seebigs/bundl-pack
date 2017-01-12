@@ -37,7 +37,7 @@ An array of paths to use when resolving required/imported files
 ```
 
 ## .obscure
-Hide relative path names from require statements
+Hide relative path names from require statements (`require('../path/file.js')` becomes `require(2)`)
 ```js
 {
     obscure: true
