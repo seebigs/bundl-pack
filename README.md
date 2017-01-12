@@ -36,6 +36,14 @@ An array of paths to use when resolving required/imported files
 }
 ```
 
+## .obscure
+Hide relative path names from require statements
+```js
+{
+    obscure: true
+}
+```
+
 ## .[extension]
 Define processors and options for files of any type
 ```js

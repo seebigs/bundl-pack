@@ -94,28 +94,27 @@ function crawlDependencies (options, file, pack, requireAs, entry) {
     return pack;
 }
 
-function wrapModule (mod, pack) {
-    var modStr = '\n\n/*** [' + (mod.id) + '] ' + mod.path + ' ***/\n';
-    modStr += '/***/[' + wrapModuleConstructor(mod);
-    modStr += ', ' + mapRelativeToId(mod.relMap, pack);
-    return modStr + '],\n\n';
-}
+function wrapModule (mod, pack, options) {
+    var leadingComment = '\n\n/*** [' + (mod.id) + '] ' + mod.path + ' ***/\n';
+    var modOpener = '/***/[function (require, module, exports) {\n\n';
+    var modCloser = '\n\n/***/}, ';
 
-function wrapModuleConstructor (mod) {
-    var modFn = 'function (require, module, exports) {\n\n';
-    modFn += mod.contents;
-    return modFn + '\n\n/***/}';
-}
-
-function mapRelativeToId (relMap, pack) {
-    var mod, map = {};
-
-    utils.each(relMap, function (abs, rel) {
-        mod = pack[abs];
-        map[rel] = mod ? mod.id : 0;
+    var map = {};
+    utils.each(mod.relMap, function (abs, rel) {
+        var m = pack[abs];
+        var coord = m ? m.id : 0;
+        if (options.obscure) {
+            var matchReq = new RegExp('require\\([\\\'\\"]' + rel + '[\\\'\\"]\\)', 'g');
+            mod.contents = mod.contents.replace(matchReq, 'require(' + coord + ')');
+            map[coord] = coord;
+        } else {
+            map[rel] = coord;
+        }
     });
 
-    return JSON.stringify(map);
+    var modStr = leadingComment + modOpener + mod.contents + modCloser;
+    modStr += JSON.stringify(map);
+    return modStr + '],\n\n';
 }
 
 // bundle any requireAs functions
@@ -175,12 +174,12 @@ function create (resource, options) {
     // add entry module
     var entryMod = pack[entryFile.path];
     entryMod.id = 0;
-    modulesStr += wrapModule(entryMod, pack);
+    modulesStr += wrapModule(entryMod, pack, options);
     delete pack[entryFile.path];
 
     // add modules
     utils.each(pack, function (mod) {
-        modulesStr += wrapModule(mod, pack);
+        modulesStr += wrapModule(mod, pack, options);
     });
 
     // wrap modules before/after
