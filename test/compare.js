@@ -3,6 +3,7 @@ var bundlpack = require('../index.js');
 var bytes = require('pretty-bytes');
 var consoleTable = require('console.table');
 var fs = require('fs');
+var lessProcessor = require('bundl-pack-less');
 var ugly = require('uglify-js');
 var utils = require('seebigs-utils');
 
@@ -12,7 +13,7 @@ var outputPath = './test/compare/';
 var entryPath = './test/fixtures/commonjs/entry.js';
 var entryContents = utils.readFile(entryPath);
 var paths = ['test/fixtures/commonjs'];
-var autoInject = args.autoInject;
+var autoInject = !!args.autoInject;
 
 var r = {
     name: 'my_bundle.js',
@@ -37,7 +38,8 @@ var bp = bundlpack({
     },
     json: {
         autoInject: !!autoInject
-    }
+    },
+    less: lessProcessor()
 }).one(r.contents, r);
 
 function minify (contents) {

@@ -5,6 +5,8 @@ var nodeAsBrowser = require('node-as-browser');
 var path = require('path');
 var utils = require('seebigs-utils');
 
+var lessProcessor = require('bundl-pack-less');
+
 // provide browser constructs like document and window
 nodeAsBrowser.init(global);
 
@@ -21,7 +23,7 @@ describe('CommonJS', function () {
     var entryFile = utils.readFile('./test/fixtures/commonjs/entry.js');
     var paths = ['test/fixtures/commonjs'];
     var fixturesPath = path.resolve(__dirname + '/../fixtures/commonjs/');
-    var expectedTestValue = '{"css":"body{margin:0;background:#f66}","html":"<div><h1 id=\\"willy\\" class=\\"wonka\\">Charlie\'s Friend</h1></div>","json":{"foo":["bar"]}}';
+    var expectedTestValue = '{"css":"body{margin:0;background:#f66}","html":"<div><h1 id=\\"willy\\" class=\\"wonka\\">Charlie\'s Friend</h1></div>","json":{"foo":["bar"]},"less":".foo{color:#00f}.foo .bar{color:red}"}';
 
     var r = {
         name: 'my_bundle.js',
@@ -30,7 +32,7 @@ describe('CommonJS', function () {
     };
 
     describe('r is optional', function (expect) {
-        var bp = bundlPack({ paths: paths }).one(r.contents);
+        var bp = bundlPack({ paths: paths, less: lessProcessor() }).one(r.contents);
         eval(bp.contents);
         expect(JSON.stringify(window.testValue)).toBe(expectedTestValue);
     });
@@ -48,6 +50,7 @@ describe('CommonJS', function () {
                 'proc/proc.css',
                 'proc/proc.html',
                 'proc/proc.json',
+                'proc/proc.less',
                 'sub/unused.js'
             ];
 
@@ -60,7 +63,7 @@ describe('CommonJS', function () {
         });
 
         describe('it finds and correctly bundles all dependencies', function (expect) {
-            var bp = bundlPack({ paths: paths }).one(r.contents, r);
+            var bp = bundlPack({ paths: paths, less: lessProcessor() }).one(r.contents, r);
             eval(bp.contents);
             expect(JSON.stringify(window.testValue)).toBe(expectedTestValue);
         });

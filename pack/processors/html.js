@@ -36,7 +36,5 @@ function htmlProcessor (file, options) {
 }
 
 module.exports = {
-
     processor: htmlProcessor
-
 };

@@ -20,7 +20,5 @@ function defaultProcessor (file, options) {
 }
 
 module.exports = {
-
     processor: defaultProcessor
-
 };

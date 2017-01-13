@@ -47,7 +47,7 @@ Hide relative path names from require statements (`require('../path/file.js')` b
 ## .[extension]
 Define processors and options for files of any type
 ```js
-var lessProcessor = require('bundl-processor-less');
+var lessProcessor = require('bundl-pack-less');
 
 {
     css: {

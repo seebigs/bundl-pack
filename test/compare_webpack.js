@@ -5,7 +5,8 @@ var uglify = require('gulp-uglify');
 var webpack = require('webpack-stream');
 
 function makeWebpackedFiles (entryPath, outputPath, autoInject) {
-    var cssLoader = autoInject ? 'style-loader!css-loader' : 'css-loader';
+    var cssLoader = autoInject ? 'style!css' : 'css';
+    var lessLoader = autoInject ? 'style!css!less' : 'css!less';
 
     return gulp.src(entryPath)
         .pipe(webpack({
@@ -15,8 +16,9 @@ function makeWebpackedFiles (entryPath, outputPath, autoInject) {
             module: {
                 loaders: [
                     { test: /\.css$/, loader: cssLoader },
-                    { test: /\.html$/, loader: 'html-loader' },
-                    { test: /\.json$/, loader: 'json-loader' }
+                    { test: /\.less$/, loader: lessLoader },
+                    { test: /\.html$/, loader: 'html' },
+                    { test: /\.json$/, loader: 'json' }
                 ]
             },
             quiet: true

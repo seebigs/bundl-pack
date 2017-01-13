@@ -28,7 +28,8 @@ function cssProcessor (file, options) {
     if (options.autoInject === false) {
         contents = "module.exports = '" + contents + "';";
     } else {
-        contents = "module.exports = require.as.css('" + contents + "', '" + file.path.split('/').pop() + "');";
+        var className = file.path ? "', '" + file.path.split('/').pop() : '';
+        contents = "module.exports = require.as.css('" + contents + className + "');";
     }
 
     return contents;

@@ -8,8 +8,7 @@ var path = require('path');
 var resolve = require('seebigs-resolve');
 var utils = require('seebigs-utils');
 
-var builtInProcessors = require('./processors/_get.js');
-var defaultProcessor = require('./processors/default.js');
+var getProcessor = require('./processors/_get.js');
 var prelude = require('./prelude.js');
 
 var args = utils.args();
@@ -28,11 +27,11 @@ function crawlDependencies (options, file, pack, requireAs, entry) {
             var procOptions = options[ext] || {};
 
             if (typeof procOptions === 'function') {
-                p = procOptions(ext, builtInProcessors, options);
+                p = procOptions(getProcessor, options);
                 procOptions = {};
 
             } else {
-                p = builtInProcessors[ext] || defaultProcessor;
+                p = getProcessor(ext);
             }
 
             processor = p.processor;

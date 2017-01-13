@@ -8,6 +8,7 @@ var uglify = require('gulp-uglify');
 function makeBrowserifiedFiles (entryPath, outputPath, autoInject) {
     return browserify(entryPath)
         .transform('html2js-browserify', { minify: true, collapseWhitespace: true })
+        .transform('node-lessify', { textMode: true })
         .transform('browserify-css', { autoInject: autoInject, minify: true })
         .bundle().on('error', function (err) {
             console.log(err);
