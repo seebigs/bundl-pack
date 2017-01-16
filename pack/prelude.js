@@ -1,26 +1,26 @@
 
-function prelude (modules, as) {
+function _bundl (modules, as) {
     var cache = {};
 
-    function bundlRequire (id) {
+    function _bundl_require (id) {
         if(!cache[id]) {
             var m = cache[id] = {exports:{}};
 
-            var inModuleRequire = function (relpath) {
+            function _bundl_require_in_module (relpath) {
                 var packedId = modules[id][1][relpath];
                 if (!packedId) throw 'Missing ' + relpath;
-                return bundlRequire(packedId);
-            };
+                return _bundl_require(packedId);
+            }
 
-            inModuleRequire.as = as;
+            _bundl_require_in_module.as = as;
 
-            modules[id][0].call(m.exports, inModuleRequire, m, m.exports, modules);
+            modules[id][0].call(m.exports, _bundl_require_in_module, m, m.exports, modules);
         }
 
         return cache[id].exports;
     }
 
-    bundlRequire(0);
+    _bundl_require(0);
 }
 
-module.exports = prelude;
+module.exports = _bundl;

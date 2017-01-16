@@ -1,4 +1,3 @@
-
 module.exports = function () {
     return {
         css: require('../proc/proc.css'),

@@ -11,6 +11,12 @@ var utils = require('seebigs-utils');
 var getProcessor = require('./processors/_get.js');
 var prelude = require('./prelude.js');
 
+// template
+require.extensions['.template'] = function (module, filename) {
+    module.exports = fs.readFileSync(filename, 'utf8');
+};
+var template = require('lodash.template')(require('./pack.template'));
+
 var args = utils.args();
 
 function crawlDependencies (options, file, pack, requireAs, entry) {
@@ -40,12 +46,14 @@ function crawlDependencies (options, file, pack, requireAs, entry) {
                 requireAs[ext] = p.requireAs;
             }
 
-            contents = processor({
+            var fileObj = {
                 contents: contents,
                 ext: ext,
                 path: filepath,
                 filename: filename
-            }, procOptions);
+            };
+
+            contents = processor(fileObj, procOptions) + '\n';
 
         } catch (err) {
             console.log('Error in ' + ext + ' preprocessor');
@@ -94,9 +102,9 @@ function crawlDependencies (options, file, pack, requireAs, entry) {
 }
 
 function wrapModule (mod, pack, options) {
-    var leadingComment = '\n\n/*** [' + (mod.id) + '] ' + mod.path + ' ***/\n';
-    var modOpener = '/***/[function (require, module, exports) {\n\n';
-    var modCloser = '\n\n/***/}, ';
+    var leadingComment = '/*** [' + (mod.id) + '] ' + mod.path + ' ***/\n\n';
+    var modOpener = '/***/[function (require, module, exports) {\n';
+    var modCloser = '\n\n\n/***/}, ';
 
     var map = {};
     utils.each(mod.relMap, function (abs, rel) {
@@ -111,9 +119,9 @@ function wrapModule (mod, pack, options) {
         }
     });
 
-    var modStr = leadingComment + modOpener + mod.contents + modCloser;
+    var modStr = modOpener + leadingComment + mod.contents + modCloser;
     modStr += JSON.stringify(map);
-    return modStr + '],\n\n';
+    return modStr + '],\n';
 }
 
 // bundle any requireAs functions
@@ -182,7 +190,11 @@ function create (resource, options) {
     });
 
     // wrap modules before/after
-    modulesStr = '/****/;(' + prelude.toString() + ')([\n\n' + modulesStr.slice(0, -3) + '\n\n/****/]' + writeRequireAs(requireAs) + ');\n';
+    modulesStr = template({
+        prelude: prelude.toString(),
+        modules: modulesStr, // modulesStr.slice(0, -3),
+        requireAs: writeRequireAs(requireAs)
+    });
 
     return {
         changemap: changemap,

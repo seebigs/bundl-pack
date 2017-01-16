@@ -4,8 +4,8 @@
   "description": "Package 'required' and 'imported' dependencies",
   "main": "index.js",
   "scripts": {
-    "test": "node ./test/automated.js",
-    "compare": "node ./test/compare.js"
+    "test": "node test/automated",
+    "compare": "node test/compare"
   },
   "repository": {
     "type": "git",
