@@ -4,12 +4,11 @@
 
 var detective = require('detective');
 var fs = require('fs');
-var path = require('path');
-var resolve = require('seebigs-resolve');
-var utils = require('seebigs-utils');
-
 var getProcessor = require('./processors/_get.js');
+var path = require('path');
 var prelude = require('./prelude.js');
+var resolve = require('./resolve.js');
+var utils = require('seebigs-utils');
 
 // template
 require.extensions['.template'] = function (module, filename) {
@@ -18,6 +17,12 @@ require.extensions['.template'] = function (module, filename) {
 var template = require('lodash.template')(require('./pack.template'));
 
 var args = utils.args();
+
+function mockDetective (contents) {
+    var matchMock = /require\.cache\.mock\(['"]([\w\.\/-]+)/g;
+    matchMock = matchMock.exec(contents);
+    return matchMock ? matchMock[1] : [];
+}
 
 function crawlDependencies (options, file, pack, requireAs, entry) {
     var filepath = entry ? file.path : path.resolve(file.path);
@@ -69,25 +74,32 @@ function crawlDependencies (options, file, pack, requireAs, entry) {
     };
 
     // find require statements in this file
-    var reqs = detective(contents);
+    var reqs = [].concat(detective(contents), mockDetective(contents));
+
+    reqs = reqs.filter(function (value, index, self) {
+        return self.indexOf(value) === index;
+    });
+
     utils.each(reqs, function (req) {
         var mod = resolve(req, filepath, options.paths);
 
         if (mod.contents) {
-            if (args.verbose) {
-                console.log('- Required ' + mod.path);
-            }
-
             if (!pack[mod.path]) {
+                if (args.verbose) {
+                    console.log('- Required ' + mod.path);
+                }
+
                 var subfile = {
                     base: path.dirname(mod.path),
                     contents: mod.contents,
                     id: req,
                     path: mod.path
                 };
+
                 Object.assign(pack, crawlDependencies(options, subfile, pack, requireAs));
-                relMap[req] = mod.path;
             }
+
+            relMap[req] = mod.path;
 
         } else {
             console.log();

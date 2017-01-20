@@ -21,6 +21,7 @@ function getRequiredFiles (name) {
 describe('CommonJS', function () {
 
     var entryFile = utils.readFile('./test/fixtures/commonjs/entry.js');
+    var entryFileMocked = utils.readFile('./test/fixtures/commonjs/entry_mocked.js');
     var paths = ['test/fixtures/commonjs'];
     var fixturesPath = path.resolve(__dirname + '/../fixtures/commonjs/');
     var expectedTestValue = '{"css":"body{margin:0;background:#f66}","html":"<div><h1 id=\\"willy\\" class=\\"wonka\\">Charlie\'s Friend</h1></div>","json":{"foo":["bar"]},"less":".foo{color:#00f}.foo .bar{color:red}"}';
@@ -29,6 +30,12 @@ describe('CommonJS', function () {
         name: 'my_bundle.js',
         src: '../fixtures/commonjs/entry.js',
         contents: entryFile
+    };
+
+    var rMocked = {
+        name: 'my_bundle_mocked.js',
+        src: '../fixtures/commonjs/entry_mocked.js',
+        contents: entryFileMocked
     };
 
     describe('r is optional', function (expect) {
@@ -68,6 +75,12 @@ describe('CommonJS', function () {
             expect(JSON.stringify(window.testValue)).toBe(expectedTestValue);
         });
 
+    });
+
+    describe('can be mocked', function (expect) {
+        var b = bundlPack({ paths: paths }).one(rMocked.contents, rMocked);
+        eval(b.contents);
+        expect(window.testValue).toBe('mocked,css,html,json,less');
     });
 
     describe('respects when autoInject is false', function (expect) {
