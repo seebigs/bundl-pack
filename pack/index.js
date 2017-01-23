@@ -5,13 +5,14 @@
 var detective = require('detective');
 var fs = require('fs');
 var getProcessor = require('./processors/_get.js');
+var Module = require('module');
 var path = require('path');
 var prelude = require('./prelude.js');
 var resolve = require('./resolve.js');
 var utils = require('seebigs-utils');
 
 // template
-require.extensions['.template'] = function (module, filename) {
+Module._extensions['.template'] = function (module, filename) {
     module.exports = fs.readFileSync(filename, 'utf8');
 };
 var template = require('lodash.template')(require('./pack.template'));
