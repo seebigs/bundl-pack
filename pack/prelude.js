@@ -26,7 +26,10 @@ function _bundl (modules, as) {
             };
 
             _bundl_in_module.cache = {
-                mock: _bundl_mock
+                mock: _bundl_mock,
+                clear: function () {
+                    cache = {};
+                }
             };
 
             modules[id][0].call(m.exports, _bundl_in_module, m, m.exports, modules);
