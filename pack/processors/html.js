@@ -8,7 +8,9 @@ var utils = require('./_utils.js');
 function minHTML (file, options) {
     options = Object.assign({
         collapseWhitespace: true,
-        removeComments: true
+        removeComments: true,
+        processConditionalComments: true,
+        minifyCSS: true
     }, options);
 
     if (options === false) {
