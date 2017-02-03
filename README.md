@@ -2,7 +2,7 @@
 
 *Pack project dependencies into one JS file. Easily include external HTML and CSS files as strings. Pre-process LESS, SASS, CoffeeScript, and more...*
 
-*Note: Only works with CommonJS `require` for now, but ES6 `import` is coming soon!*
+*Supports ES6 imports via [bundl-pack-babel](https://github.com/seebigs/bundl-pack-babel)*
 
 ```
 $ npm install --save-dev bundl-pack
@@ -47,6 +47,7 @@ Hide relative path names from require statements (`require('../path/file.js')` b
 ## .[extension]
 Define processors and options for files of any type
 ```js
+var babelProcessor = require('bundl-pack-babel');
 var lessProcessor = require('bundl-pack-less');
 
 {
@@ -62,6 +63,9 @@ var lessProcessor = require('bundl-pack-less');
     },
     less: lessProcessor({
         relativeUrls: false
+    }),
+    js: babelProcessor({
+        presets: ['es2015']
     })
 }
 ```
