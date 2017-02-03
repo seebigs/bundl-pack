@@ -25,47 +25,44 @@ function mockDetective (contents) {
     return matchMock ? matchMock[1] : [];
 }
 
-function crawlDependencies (options, file, pack, requireAs, entry) {
-    var filepath = entry ? file.path : path.resolve(file.path);
+function crawlDependencies (options, file, pack, requireAs, isEntry) {
+    var filepath = isEntry ? file.path : path.resolve(file.path);
     var contents = file.contents.toString();
     var ext = path.extname(filepath).substr(1);
     var filename = filepath.split('/').pop();
     var relMap = {};
 
-    // run non-js processors
-    if (ext && ext !== 'js') {
-        try {
-            var p, processor;
-            var procOptions = options[ext] || {};
+    // run processors
+    var fileObj = {
+        contents: contents,
+        ext: ext,
+        path: filepath,
+        filename: filename
+    };
 
-            if (typeof procOptions === 'function') {
-                p = procOptions(getProcessor, options);
-                procOptions = {};
+    var procOptions = (isEntry ? (options.entry || options.js) : options[ext]) || {};
+    var p = {};
 
-            } else {
-                p = getProcessor(ext);
-            }
-
-            processor = p.processor;
-
-            if (p.requireAs && procOptions.autoInject !== false) {
-                requireAs[ext] = p.requireAs;
-            }
-
-            var fileObj = {
-                contents: contents,
-                ext: ext,
-                path: filepath,
-                filename: filename
-            };
-
-            contents = processor(fileObj, procOptions) + '\n';
-
-        } catch (err) {
-            console.log('Error in ' + ext + ' preprocessor');
-            console.log(err.stack);
-            process.exit(1);
+    try {
+        if (typeof procOptions === 'function') {
+            p = procOptions(getProcessor, options);
+            procOptions = {};
+        } else if (!isEntry && ext !== 'js') {
+            p = getProcessor(ext);
         }
+
+        if (typeof p.processor === 'function') {
+            contents = p.processor(fileObj, procOptions) + '\n';
+        }
+
+        if (p.requireAs && procOptions.autoInject !== false) {
+            requireAs[ext] = p.requireAs;
+        }
+
+    } catch (err) {
+        console.log('Error in ' + ext + ' preprocessor');
+        console.log(err.stack);
+        process.exit(1);
     }
 
     pack[filepath] = {

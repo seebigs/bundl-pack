@@ -11,9 +11,7 @@ var override = {
 
     'url': "window.URL",
 
-    // Shims for external packages that should work in browsers
-
-    'require-cache-mock': "{}"
+    // Shims for external node_modules that should work in browsers
 
 };
 

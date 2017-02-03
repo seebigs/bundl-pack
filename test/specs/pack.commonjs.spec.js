@@ -5,6 +5,7 @@ var nodeAsBrowser = require('node-as-browser');
 var path = require('path');
 var utils = require('seebigs-utils');
 
+var babelProcessor = require('bundl-pack-babel');
 var lessProcessor = require('bundl-pack-less');
 
 // provide browser constructs like document and window
@@ -21,6 +22,7 @@ function getRequiredFiles (name) {
 describe('CommonJS', function () {
 
     var entryFile = utils.readFile('./test/fixtures/commonjs/entry.js');
+    var entryFileES = utils.readFile('./test/fixtures/commonjs/entry_es.js');
     var entryFileMocked = utils.readFile('./test/fixtures/commonjs/entry_mocked.js');
     var paths = ['test/fixtures/commonjs'];
     var fixturesPath = path.resolve(__dirname + '/../fixtures/commonjs/');
@@ -30,6 +32,12 @@ describe('CommonJS', function () {
         name: 'my_bundle.js',
         src: '../fixtures/commonjs/entry.js',
         contents: entryFile
+    };
+
+    var rBabel = {
+        name: 'my_bundle_es.js',
+        src: '../fixtures/commonjs/entry_es.js',
+        contents: entryFileES
     };
 
     var rMocked = {
@@ -75,6 +83,16 @@ describe('CommonJS', function () {
             expect(JSON.stringify(window.testValue)).toBe(expectedTestValue);
         });
 
+    });
+
+    describe('handles babel as processor', function (expect) {
+        var b = bundlPack({
+            paths: paths,
+            less: lessProcessor(),
+            js: babelProcessor()
+        }).one(rBabel.contents, rBabel);
+        eval(b.contents);
+        expect(JSON.stringify(window.testValue)).toBe(expectedTestValue);
     });
 
     describe('can be mocked', function (expect) {
