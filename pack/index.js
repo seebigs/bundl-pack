@@ -6,7 +6,7 @@ var crawl = require('./crawl.js');
 var fs = require('fs');
 var Module = require('module');
 var path = require('path');
-var prelude = require('./prelude.js');
+var requirer = require('./requirer.js');
 var utils = require('seebigs-utils');
 
 // template
@@ -110,7 +110,7 @@ function create (resource, options) {
     // wrap modules before/after
     modulesStr = template({
         globals: 'window, document',
-        prelude: prelude.toString(),
+        requirer: requirer.toString(),
         modules: modulesStr,
         requireAs: writeRequireAs(requireAs)
     });

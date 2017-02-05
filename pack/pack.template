@@ -1,5 +1,5 @@
 ;(function(<%= globals %>){_bundl([
 <%= modules %>
 /**/]<%= requireAs %>);
-<%= prelude %>
+<%= requirer %>
 })(<%= globals %>);

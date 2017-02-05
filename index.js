@@ -3,7 +3,7 @@
  */
 
 var pack = require('./pack');
-var prelude = require('./pack/prelude');
+var requirer = require('./pack/requirer');
 var utils = require('seebigs-utils');
 
 function bundlPack (options) {
@@ -25,6 +25,6 @@ function bundlPack (options) {
 
 }
 
-bundlPack.prelude = prelude;
+bundlPack.requirer = requirer;
 
 module.exports = bundlPack;
