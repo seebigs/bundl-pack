@@ -1,19 +1,18 @@
-
-function _bundl (modules, as) {
+function require (modules, as) {
     var cache = {};
     var mocks = {};
 
-    function _bundl_require (id) {
+    function __require_lookup (id) {
         if(!cache[id]) {
             var m = cache[id] = {exports:{}};
 
-            function _bundl_in_module (relpath) {
+            function __require_in_module (relpath) {
                 var packedId = modules[id][1][relpath];
                 if (!packedId) throw 'Missing ' + relpath;
-                return mocks[packedId] || _bundl_require(packedId);
+                return mocks[packedId] || __require_lookup(packedId);
             }
 
-            _bundl_in_module.as = as;
+            __require_in_module.as = as;
 
             function _bundl_mock (relpath, mock) {
                 var packedId = modules[id][1][relpath];
@@ -25,20 +24,20 @@ function _bundl (modules, as) {
                 mocks = {};
             };
 
-            _bundl_in_module.cache = {
+            __require_in_module.cache = {
                 mock: _bundl_mock,
                 clear: function () {
                     cache = {};
                 }
             };
 
-            modules[id][0].call(m.exports, _bundl_in_module, m, m.exports, modules);
+            modules[id][0].call(m.exports, __require_in_module, m, m.exports, modules);
         }
 
         return cache[id] ? cache[id].exports : {};
     }
 
-    _bundl_require(0);
+    __require_lookup(0);
 }
 
-module.exports = _bundl;
+module.exports = require;

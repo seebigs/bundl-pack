@@ -1,4 +1,4 @@
-;(function(<%= globals %>){_bundl([
+;(function(<%= globals %>){require([
 <%= modules %>
 /**/]<%= requireAs %>);
 <%= requirer %>
