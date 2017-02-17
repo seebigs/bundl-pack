@@ -31,23 +31,26 @@ describe('CommonJS', function () {
     var r = {
         name: 'my_bundle.js',
         src: '../fixtures/commonjs/entry.js',
-        contents: entryFile
+        contents: entryFile,
+        sourcemaps: []
     };
 
     var rBabel = {
         name: 'my_bundle_es.js',
         src: '../fixtures/commonjs/entry_es.js',
-        contents: entryFileES
+        contents: entryFileES,
+        sourcemaps: []
     };
 
     var rMocked = {
         name: 'my_bundle_mocked.js',
         src: '../fixtures/commonjs/entry_mocked.js',
-        contents: entryFileMocked
+        contents: entryFileMocked,
+        sourcemaps: []
     };
 
     describe('r is optional', function (expect) {
-        var bp = bundlPack({ paths: paths, less: lessProcessor() }).one(r.contents);
+        var bp = bundlPack({ paths: paths, less: lessProcessor() }).one(r.contents, r);
         eval(bp.contents);
         expect(JSON.stringify(window.testValue)).toBe(expectedTestValue);
     });
@@ -71,10 +74,32 @@ describe('CommonJS', function () {
 
             files.forEach(function (file) {
                 expectedChangeMap[fixturesPath + '/' + file] = 'my_bundle.js';
-            })
+            });
 
             var bp = bundlPack({ paths: paths }).one(r.contents, r);
             expect(bp.changemap).toBe(expectedChangeMap);
+        });
+
+        describe('it builds a sourcemaps object', function (expect) {
+            var expectedSources = [];
+
+            var files = [
+                'one.js',
+                'sub/two.js',
+                'proc/proc.css',
+                'proc/proc.html',
+                'proc/proc.json',
+                'proc/proc.less',
+                'sub/unused.js'
+            ];
+
+            files.forEach(function (file) {
+                expectedSources.push(path.resolve('test/fixtures/commonjs/' + file));
+            });
+
+            r.sourcemaps = [];
+            var bp = bundlPack({ paths: paths, less: lessProcessor() }).one(r.contents, r);
+            expect(bp.sourcemaps.length).toBe(7);
         });
 
         describe('it finds and correctly bundles all dependencies', function (expect) {

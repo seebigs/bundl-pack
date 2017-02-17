@@ -15,8 +15,9 @@ function bundlPack (options) {
      * @returns { changemap, contents (updated) }
      */
     function one (contents, r) {
-        r = r || { contents: contents };
-        return pack(r, opts);
+        var bundl = this;
+        r = r || { contents: contents, sourcemaps: [] };
+        return pack(bundl, r, opts);
     }
 
     return {

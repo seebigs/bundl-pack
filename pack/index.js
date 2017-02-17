@@ -16,6 +16,8 @@ Module._extensions['.template'] = function (module, filename) {
 var template = require('lodash.template')(require('./pack.template'));
 
 
+var topWrapperHeight = 4;
+
 function wrapModule (mod, pack, options) {
     var leadingComment = '/*** [' + (mod.id) + '] ' + mod.path + ' ***/\n\n';
     var modOpener = '/***/[function (require, module, exports) {\n';
@@ -62,7 +64,7 @@ function writeRequireAs (requireAs) {
  * @return { contents, changemap }
  */
 
-function create (resource, options) {
+function create (b, resource, options) {
     resource.src = resource.src || [];
     options = options || {};
 
@@ -85,7 +87,7 @@ function create (resource, options) {
     var requireAs = {};
 
     // walk the tree and build `pack`
-    var pack = crawl(options, entryFile, {}, requireAs, true);
+    var pack = crawl(options, entryFile, {}, requireAs, true, (b.LINES || 1) + topWrapperHeight + 1);
 
     // add pack to changemap
     var changemap = {};
@@ -99,8 +101,13 @@ function create (resource, options) {
     modulesStr += wrapModule(entryMod, pack, options);
     delete pack[entryFile.path];
 
-    // add modules
+    // add modules + sourcemaps
+    resource.sourcemaps.forEach(function (smap) {
+        smap.generated.line += topWrapperHeight; // push down to allow for wrapper
+    });
+
     utils.each(pack, function (mod) {
+        resource.sourcemaps.push(mod.sourcemap);
         modulesStr += wrapModule(mod, pack, options);
     });
 
@@ -117,7 +124,8 @@ function create (resource, options) {
 
     return {
         changemap: changemap,
-        contents: modulesStr
+        contents: modulesStr,
+        sourcemaps: resource.sourcemaps
     };
 }
 

@@ -18,7 +18,8 @@ var autoInject = !!args.autoInject;
 var r = {
     name: 'my_bundle.js',
     src: '../fixtures/commonjs/entry.js',
-    contents: entryContents
+    contents: entryContents,
+    sourcemaps: []
 };
 
 
