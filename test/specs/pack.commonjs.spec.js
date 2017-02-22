@@ -26,7 +26,7 @@ describe('CommonJS', function () {
     var entryFileMocked = utils.readFile('./test/fixtures/commonjs/entry_mocked.js');
     var paths = ['test/fixtures/commonjs'];
     var fixturesPath = path.resolve(__dirname + '/../fixtures/commonjs/');
-    var expectedTestValue = '{"css":"body{margin:0;background:#f66}","html":"<div><h1 id=\\"willy\\" class=\\"wonka\\">Charlie\'s Friend</h1></div>","json":{"foo":["bar"]},"less":".foo{color:#00f}.foo .bar{color:red}"}';
+    var expectedTestValue = '{"css":"body{margin:0;background:#f66}","html":"<div><h1 id=\\"willy\\" class=\\"wonka\\">Charlie\'s Friend</h1></div>","json":{"foo":["bar"]},"less":".foo{color:#00f}.foo .bar{color:red}","path":{"sep":"/","delimiter":":"}}';
 
     var r = {
         name: 'my_bundle.js',
@@ -76,30 +76,16 @@ describe('CommonJS', function () {
                 expectedChangeMap[fixturesPath + '/' + file] = 'my_bundle.js';
             });
 
+            expectedChangeMap[path.resolve('node_modules/path-browserify/index.js')] = 'my_bundle.js';
+
             var bp = bundlPack({ paths: paths }).one(r.contents, r);
             expect(bp.changemap).toBe(expectedChangeMap);
         });
 
         describe('it builds a sourcemaps object', function (expect) {
-            var expectedSources = [];
-
-            var files = [
-                'one.js',
-                'sub/two.js',
-                'proc/proc.css',
-                'proc/proc.html',
-                'proc/proc.json',
-                'proc/proc.less',
-                'sub/unused.js'
-            ];
-
-            files.forEach(function (file) {
-                expectedSources.push(path.resolve('test/fixtures/commonjs/' + file));
-            });
-
             r.sourcemaps = [];
             var bp = bundlPack({ paths: paths, less: lessProcessor() }).one(r.contents, r);
-            expect(bp.sourcemaps.length).toBe(7);
+            expect(bp.sourcemaps.length).toBe(8);
         });
 
         describe('it finds and correctly bundles all dependencies', function (expect) {
@@ -123,7 +109,7 @@ describe('CommonJS', function () {
     describe('can be mocked', function (expect) {
         var b = bundlPack({ paths: paths }).one(rMocked.contents, rMocked);
         eval(b.contents);
-        expect(window.testValue).toBe('mocked,css,html,json,less');
+        expect(window.testValue).toBe('mocked,css,html,json,less,path');
     });
 
     describe('respects when autoInject is false', function (expect) {

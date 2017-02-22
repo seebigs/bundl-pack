@@ -43,7 +43,7 @@ function crawl (options, file, pack, requireAs, isEntry, initialLines) {
         if (typeof procOptions === 'function') {
             p = procOptions(getProcessor, options);
             procOptions = {};
-        } else if (!isEntry && ext !== 'js') {
+        } else if (!isEntry && ext !== 'js' && file.processAs !== 'js') {
             p = getProcessor(ext);
         }
 
@@ -100,7 +100,8 @@ function crawl (options, file, pack, requireAs, isEntry, initialLines) {
                     base: path.dirname(mod.path),
                     contents: mod.contents,
                     id: req,
-                    path: mod.path
+                    path: mod.path,
+                    processAs: mod.processAs
                 };
 
                 Object.assign(pack, crawl(options, subfile, pack, requireAs));

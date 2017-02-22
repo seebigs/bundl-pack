@@ -1,5 +1,5 @@
-;(function(<%= globals %>){require([
+;(function(<%= globalsTop %>){<%= globalsFirst %>require([
 <%= modules %>
 /**/]<%= requireAs %>);
 <%= requirer %>
-})(<%= globals %>);
+})(<%= globalsBottom %>);

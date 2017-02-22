@@ -4,6 +4,7 @@
 
 var crawl = require('./crawl.js');
 var fs = require('fs');
+var getGlobals = require('./globals.js').get;
 var Module = require('module');
 var path = require('path');
 var requirer = require('./requirer.js');
@@ -114,9 +115,14 @@ function create (b, resource, options) {
     // drop trailing comma
     modulesStr =  modulesStr.slice(0, -2);
 
+    // Insert node globals if used
+    var globals = getGlobals(modulesStr);
+
     // wrap modules before/after
     modulesStr = template({
-        globals: 'window, document',
+        globalsTop: globals.top,
+        globalsFirst: globals.first,
+        globalsBottom: globals.bottom,
         requirer: requirer.toString(),
         modules: modulesStr,
         requireAs: writeRequireAs(requireAs)
