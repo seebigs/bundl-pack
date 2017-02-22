@@ -17,13 +17,18 @@
     "url": "https://github.com/seebigs/bundl-pack/issues"
   },
   "dependencies": {
+    "buffer": "^5.0.5",
     "clean-css": "^3.4.23",
     "detective": "^4.3.2",
     "html-minifier": "^3.2.3",
     "lodash.template": "^4.4.0",
+    "os-browserify": "^0.2.1",
     "path-browserify": "0.0.0",
-    "seebigs-resolve": "^1.0.3",
-    "seebigs-utils": "^1.2.1"
+    "seebigs-resolve": "^1.3.0",
+    "seebigs-utils": "^1.2.1",
+    "stream-browserify": "^2.0.1",
+    "string_decoder": "^0.10.31",
+    "vm-browserify": "0.0.4"
   },
   "devDependencies": {
     "browserify": "^13.3.0",
