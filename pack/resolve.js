@@ -6,9 +6,10 @@ var fs = require('fs');
 var path = require('path');
 var seebigsResolve = require('seebigs-resolve').browser;
 
-// Override requires for packages that are included with bundl-pack
+// Shims for packages that are included with bundl-pack
 var builtins = {
     'buffer': path.resolve(__dirname + '/../shims/buffer.js'),
+    'crypto': require.resolve('crypto-browserify'),
     'fetch': path.resolve(__dirname + '/../shims/fetch.js'),
     'http': path.resolve(__dirname + '/../shims/http.js'),
     'https': path.resolve(__dirname + '/../shims/https.js'),
@@ -23,30 +24,23 @@ var builtins = {
     'vm': require.resolve('vm-browserify')
 };
 
-// Override requires for packages that must be npm installed into YOUR project
+// Shims for packages that must be npm installed into YOUR project
 var externals = {
-    'crypto': 'crypto-browserify',
-    'pbkdf2': 'pbkdf2/browser.js'
+    // 'thing': 'thing-browserify'
 };
 
 function resolve (str, fromFile, paths) {
     var builtin = builtins[str];
     if (builtin) {
-        var ovrContents = fs.readFileSync(builtin, 'utf8');
-
-        if (ovrContents.indexOf('require(') !== -1) {
-            console.log('WARN: ' + builtin + ' contains require()');
-        }
-
         return {
-            contents: ovrContents,
+            contents: fs.readFileSync(builtin, 'utf8'),
             path: builtin
         };
     }
 
     var external = externals[str];
     if (external) {
-        if (!seebigsResolve(external, process.cwd()).path) {
+        if (!seebigsResolve(external, process.cwd()).contents) {
             throw new Error('The "' + str + '" module needs a browser shim. Please run `npm install --save-dev ' + external + '`');
         }
 
