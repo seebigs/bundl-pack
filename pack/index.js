@@ -90,17 +90,17 @@ function create (b, resource, options) {
     // walk the tree and build `pack`
     var pack = crawl(options, entryFile, {}, requireAs, true, (b.LINES || 1) + topWrapperHeight + 1);
 
+    // wrap the #entry module and remove it from the pack
+    var entryMod = pack[entryFile.path];
+    entryMod.id = 0;
+    modulesStr += wrapModule(entryMod, pack, options);
+    delete pack[entryFile.path];
+
     // add pack to changemap
     var changemap = {};
     utils.each(pack, function (mod, modPath) {
         changemap[modPath] = resource.name;
     });
-
-    // add entry module
-    var entryMod = pack[entryFile.path];
-    entryMod.id = 0;
-    modulesStr += wrapModule(entryMod, pack, options);
-    delete pack[entryFile.path];
 
     // add modules + sourcemaps
     resource.sourcemaps.forEach(function (smap) {
