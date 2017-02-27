@@ -4,6 +4,13 @@
 
 *Supports ES6 imports via [bundl-pack-babel](https://github.com/seebigs/bundl-pack-babel)*
 
+Default processors automatically handle the requiring/importing of the following extensions. (Default behavior can be modified or overriden, and [plugins already exist](https://github.com/seebigs/bundl/wiki/Popular-Plugins#modules--dependencies) to allow easy importing of many other popular file types)
+* json
+* css
+* html
+
+---
+
 ```
 $ npm install --save-dev bundl-pack
 ```
@@ -45,7 +52,7 @@ Hide relative path names from require statements (`require('../path/file.js')` b
 ```
 
 ## .[extension]
-Define processors and options for files of any type
+Define processors and options for files of any type. See [plugins](https://github.com/seebigs/bundl/wiki/Popular-Plugins#modules--dependencies)
 ```js
 var babelProcessor = require('bundl-pack-babel');
 var lessProcessor = require('bundl-pack-less');
