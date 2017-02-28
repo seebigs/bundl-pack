@@ -11,8 +11,8 @@ function readFile (path) {
 
 function get (modulesStr) {
 
-    var globalsTop = 'window, global, document';
-    var globalsBottom = 'window, window, document';
+    var globalsTop = 'window, document';
+    var globalsBottom = 'window, document';
     var globalsFirst = '';
 
     if (modulesStr.search(/\WBuffer\W/) !== -1) { // global use of Buffer detected
