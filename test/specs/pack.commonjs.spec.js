@@ -58,9 +58,7 @@ describe('CommonJS', function () {
     describe('require gets dependencies of all types', function () {
 
         describe('it builds a changemap', function (expect) {
-            var expectedChangeMap = {
-                '#entry': 'my_bundle.js',
-            };
+            var expectedChangeMap = {};
 
             var files = [
                 'one.js',

@@ -1,6 +1,6 @@
 
 var bundlpack = require('../index.js');
-var bytes = require('pretty-bytes');
+var bytes = require('bytes');
 var consoleTable = require('console.table');
 var fs = require('fs');
 var lessProcessor = require('bundl-pack-less');
