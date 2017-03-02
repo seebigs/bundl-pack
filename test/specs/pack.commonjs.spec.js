@@ -24,6 +24,7 @@ describe('CommonJS', function () {
     var entryFile = utils.readFile('./test/fixtures/commonjs/entry.js');
     var entryFileES = utils.readFile('./test/fixtures/commonjs/entry_es.js');
     var entryFileMocked = utils.readFile('./test/fixtures/commonjs/entry_mocked.js');
+    var entryFileCached = utils.readFile('./test/fixtures/commonjs/entry_cached.js');
     var paths = ['test/fixtures/commonjs'];
     var fixturesPath = path.resolve(__dirname + '/../fixtures/commonjs/');
     var expectedTestValue = '{"css":"body{margin:0;background:#f66}","html":"<div><h1 id=\\"willy\\" class=\\"wonka\\">Charlie\'s Friend</h1></div>","json":{"foo":["bar"]},"less":".foo{color:#00f}.foo .bar{color:red}","path":{"sep":"/","delimiter":":"}}';
@@ -46,6 +47,13 @@ describe('CommonJS', function () {
         name: 'my_bundle_mocked.js',
         src: '../fixtures/commonjs/entry_mocked.js',
         contents: entryFileMocked,
+        sourcemaps: []
+    };
+
+    var rCached = {
+        name: 'my_bundle.js',
+        src: '../fixtures/commonjs/cache_get.js',
+        contents: entryFileCached,
         sourcemaps: []
     };
 
@@ -108,6 +116,12 @@ describe('CommonJS', function () {
         var b = bundlPack({ paths: paths }).one(rMocked.contents, rMocked);
         eval(b.contents);
         expect(window.testValue).toBe('mocked,css,html,json,less,path');
+    });
+
+    describe('can be cached', function (expect) {
+        var b = bundlPack({ paths: paths }).one(rCached.contents, rCached);
+        eval(b.contents);
+        expect(window.testValue).toBe('mutated');
     });
 
     describe('respects when autoInject is false', function (expect) {
