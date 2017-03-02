@@ -117,6 +117,12 @@ function create (b, resource, options) {
 
     // Insert node globals if used
     var globals = getGlobals(modulesStr);
+    if (globals.first) {
+        var extra = globals.first.split('\n').length - 1;
+        resource.sourcemaps.forEach(function (smap) {
+            smap.generated.line += extra;
+        });
+    }
 
     // wrap modules before/after
     modulesStr = template({
