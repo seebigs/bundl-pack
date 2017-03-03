@@ -16,11 +16,11 @@ var builtins = {
     'indexof': path.resolve(__dirname + '/../shims/indexof.js'),
     'os': require.resolve('os-browserify/browser.js'),
     'path': require.resolve('path-browserify'),
+    'request': path.resolve(__dirname + '/../shims/request.js'),
     'stream': require.resolve('stream-browserify'),
     'string_decoder': require.resolve('string_decoder/'),
     'url': path.resolve(__dirname + '/../shims/url.js'),
     'util': path.resolve(__dirname + '/../shims/util.js'),
-    'request': path.resolve(__dirname + '/../shims/request.js'),
     'vm': require.resolve('vm-browserify')
 };
 
