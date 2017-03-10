@@ -81,7 +81,6 @@ function create (b, resource, options) {
 
     } else {
         entryFile.path = concatenatedEntryName;
-        entryFile.srcArray = resource.src; // array of src inputs
     }
 
     // track which requireAs should be included

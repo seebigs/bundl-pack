@@ -92,10 +92,6 @@ function crawl (options, file, pack, requireAs, isEntry, initialLines) {
 
         if (mod.contents) {
             if (!pack[mod.path]) {
-                if (args.verbose) {
-                    console.log('- Required ' + mod.path);
-                }
-
                 var subfile = {
                     base: path.dirname(mod.path),
                     contents: mod.contents,
