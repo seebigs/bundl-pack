@@ -35,7 +35,7 @@
     "browserify": "^13.3.0",
     "browserify-css": "^0.9.2",
     "bundl-pack-babel": "^0.1.0",
-    "bundl-pack-less": "^0.1.0",
+    "bundl-pack-less": "^0.2.0",
     "bytes": "^2.4.0",
     "console.table": "^0.8.0",
     "css-loader": "^0.26.1",

@@ -13,7 +13,7 @@ function minCSS (file, options) {
     return new CleanCSS(options).minify(file.contents).styles;
 }
 
-function cssProcessor (file, options) {
+function cssProcessor (file, options, requireAsExt) {
     options = options || {};
 
     var contents = file.contents;
@@ -29,7 +29,7 @@ function cssProcessor (file, options) {
         contents = "module.exports = '" + contents + "';";
     } else {
         var className = file.path ? "', '" + file.path.split('/').pop() : '';
-        contents = "module.exports = require.as.css('" + contents + className + "');";
+        contents = "module.exports = require.as." + (requireAsExt || 'css') + "('" + contents + className + "');";
     }
 
     return contents;

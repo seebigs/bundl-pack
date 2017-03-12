@@ -27,7 +27,13 @@ describe('CommonJS', function () {
     var entryFileCached = utils.readFile('./test/fixtures/commonjs/entry_cached.js');
     var paths = ['test/fixtures/commonjs'];
     var fixturesPath = path.resolve(__dirname + '/../fixtures/commonjs/');
-    var expectedTestValue = '{"css":"body{margin:0;background:#f66}","html":"<div><h1 id=\\"willy\\" class=\\"wonka\\">Charlie\'s Friend</h1></div>","json":{"foo":["bar"]},"less":".foo{color:#00f}.foo .bar{color:red}","path":{"sep":"/","delimiter":":"}}';
+    var expectedTestValue = '{' +
+        '"css":"body{margin:0;background:#f66}",' +
+        '"html":"<div><h1 id=\\"willy\\" class=\\"wonka\\">Charlie\'s Friend</h1></div>",' +
+        '"json":{"foo":["bar"]},' +
+        '"less":".and .more{color:green}.foo{color:#00f}.foo .bar{color:red}",' +
+        '"path":{"sep":"/","delimiter":":"}' +
+    '}';
 
     var r = {
         name: 'my_bundle.js',
@@ -132,7 +138,10 @@ describe('CommonJS', function () {
             },
             json: {
                 autoInject: false
-            }
+            },
+            less: lessProcessor({
+                autoInject: false
+            })
         }).one(r.contents, r);
 
         expect(b.contents.indexOf('requireAs') !== -1).toBe(false, '(bundle still includes requireAs)');
