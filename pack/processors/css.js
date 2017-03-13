@@ -21,6 +21,9 @@ function cssProcessor (file, options, requireAsExt) {
     // collapse into one line
     contents = minCSS(file, options.minify);
 
+    // escape backslashes
+    contents = utils.escapeBackslashes(contents);
+
     // escape single quotes
     contents = utils.escapeSingleQuotes(contents);
 
