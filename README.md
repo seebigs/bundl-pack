@@ -27,7 +27,7 @@ var packOptions = {
 bundl('entry.js')
     .then(pack(packOptions))
     .then(write())
-    .all();
+    .go();
 ```
 
 # Options
