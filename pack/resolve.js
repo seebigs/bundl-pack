@@ -16,6 +16,7 @@ var builtins = {
     'indexof': path.resolve(__dirname + '/../shims/indexof.js'),
     'os': require.resolve('os-browserify/browser.js'),
     'path': require.resolve('path-browserify'),
+    'process': path.resolve(__dirname + '/../shims/process.js'),
     'request': path.resolve(__dirname + '/../shims/request.js'),
     'stream': require.resolve('stream-browserify'),
     'string_decoder': require.resolve('string_decoder/'),
