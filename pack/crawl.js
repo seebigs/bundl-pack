@@ -86,9 +86,9 @@ function crawl (options, file, pack, requireAs, isEntry, initialLines) {
         return self.indexOf(value) === index;
     });
 
-    var resolvePath = isEntry ? path.resolve('.') : filepath;
     utils.each(reqs, function (req) {
-        var mod = resolve(req, resolvePath, options.paths);
+
+        var mod = resolve(req, filepath, options.paths);
 
         if (mod.contents) {
             if (!pack[mod.path]) {
@@ -107,7 +107,7 @@ function crawl (options, file, pack, requireAs, isEntry, initialLines) {
 
         } else {
             console.log();
-            console.log('Module "' + req + '" not found from ' + resolvePath);
+            console.log('Module "' + req + '" not found from ' + filepath);
             if (options.paths) {
                 console.log('   with paths: ' + options.paths);
             }
