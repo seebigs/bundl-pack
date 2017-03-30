@@ -11,9 +11,11 @@ function readFile (path) {
 
 function get (modulesStr) {
 
-    var globalsTop = 'window, document';
-    var globalsBottom = 'window, document';
+    var globalsTop = 'global, window, document';
+    var globalsBottom = 'window, window, document';
     var globalsFirst = '';
+
+    // TODO: the detection of global usages should be done with AST instead of RegExp
 
     if (modulesStr.search(/\WBuffer\W/) !== -1) { // global use of Buffer detected
         globalsTop += ', Buffer';

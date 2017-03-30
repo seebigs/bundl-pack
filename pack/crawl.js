@@ -106,7 +106,6 @@ function crawl (options, file, pack, requireAs, isEntry, initialLines) {
             relMap[req] = mod.path;
 
         } else {
-            console.log();
             console.log('Module "' + req + '" not found from ' + filepath);
             if (options.paths) {
                 console.log('   with paths: ' + options.paths);
