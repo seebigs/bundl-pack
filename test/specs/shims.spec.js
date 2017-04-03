@@ -19,6 +19,8 @@ describe('shims', function () {
         eval(bp.contents);
         expect(window.testValues.buffer).toBe(Buffer.poolSize, 'buffer');
         expect(window.testValues.crypto).toBe('a9993e364706816aba3e25717850c26c9cd0d89d', 'crypto');
+        expect(window.testValues.domain).toBe('function', 'domain');
+        expect(window.testValues.events).toBe('function', 'events');
         expect(window.testValues.fetch).toBe([ 'default', 'Promise', 'Response', 'Headers', 'Request' ], 'fetch');
         expect(window.testValues.http).toBe([ 'get', 'request', 'setDefaultProtocol' ], 'http');
         expect(window.testValues.https).toBe([ 'get', 'request', 'setDefaultProtocol' ], 'https');

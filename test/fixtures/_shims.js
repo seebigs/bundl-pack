@@ -1,7 +1,11 @@
 
+var Events = require('events');
+
 window.testValues = {
     buffer: require('buffer').poolSize,
     crypto: require('crypto').createHash('sha1').update('abc').digest('hex'),
+    domain: typeof require('domain').createDomain,
+    events: typeof new Events().emit,
     fetch: Object.keys(require('fetch')),
     http: Object.keys(require('http')),
     https: Object.keys(require('https')),

@@ -10,6 +10,8 @@ var seebigsResolve = require('seebigs-resolve').browser;
 var builtins = {
     'buffer': path.resolve(__dirname + '/../shims/buffer.js'),
     'crypto': require.resolve('crypto-browserify'),
+    'domain': require.resolve('domain-browser'),
+    'events': require.resolve('events/'),
     'fetch': path.resolve(__dirname + '/../shims/fetch.js'),
     'http': path.resolve(__dirname + '/../shims/http.js'),
     'https': path.resolve(__dirname + '/../shims/https.js'),
