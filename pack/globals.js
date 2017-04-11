@@ -12,7 +12,7 @@ function readFile (path) {
 function get (modulesStr) {
 
     var globalsTop = 'global, window, document';
-    var globalsBottom = 'window, window, document';
+    var globalsBottom = 'typeof global !== "undefined" ? global : window, window, document';
     var globalsFirst = '';
 
     // TODO: the detection of global usages should be done with AST instead of RegExp

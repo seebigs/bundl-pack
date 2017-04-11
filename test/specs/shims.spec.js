@@ -5,6 +5,9 @@ var utils = require('seebigs-utils');
 // provide browser constructs like document and window
 nodeAsBrowser.init(global);
 
+// create a global value that should be available within the wrapper
+globalFoo = 'bar';
+
 describe('shims', function () {
 
     var r = {
@@ -17,6 +20,7 @@ describe('shims', function () {
     describe('all work properly', function (expect) {
         var bp = bundlPack({}).one(r.contents, r);
         eval(bp.contents);
+
         expect(window.testValues.buffer).toBe(Buffer.poolSize, 'buffer');
         expect(window.testValues.crypto).toBe('a9993e364706816aba3e25717850c26c9cd0d89d', 'crypto');
         expect(window.testValues.domain).toBe('function', 'domain');
@@ -34,6 +38,8 @@ describe('shims', function () {
         expect(window.testValues.url).toBe('example.com', 'url');
         expect(window.testValues.util).toBe([ 'debuglog', 'deprecate', 'format', 'inherits', 'inspect' ], 'util');
         expect(window.testValues.vm).toBe('function', 'vm');
+
+        expect(window.testValues.globalValue).toBe('bar', 'globalValue');
     });
 
 });

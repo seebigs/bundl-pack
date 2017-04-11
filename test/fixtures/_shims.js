@@ -18,5 +18,7 @@ window.testValues = {
     string_decoder: typeof require('string_decoder').StringDecoder,
     url: require('url').parse('http://example.com').hostname,
     util: Object.keys(require('util')),
-    vm: typeof require('vm').createScript
+    vm: typeof require('vm').createScript,
+
+    globalValue: globalFoo
 };
