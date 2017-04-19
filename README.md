@@ -43,6 +43,14 @@ An array of paths to use when resolving required/imported files
 }
 ```
 
+## .leadingComments
+Display a comment at the top of every module showing the full module path. Defaults to true.
+```js
+{
+    leadingComments: false
+}
+```
+
 ## .obscure
 Hide relative path names from require statements (`require('../path/file.js')` becomes `require(2)`)
 ```js

@@ -19,8 +19,12 @@ var template = require('lodash.template')(require('./pack.template'));
 
 var topWrapperHeight = 4;
 
+function escapeRegExp (s) {
+    return s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+}
+
 function wrapModule (mod, pack, options) {
-    var leadingComment = '/*** [' + (mod.id) + '] ' + mod.path + ' ***/\n\n';
+    var leadingComment = options.leadingComments === false ? '\n\n' : '/*** [' + (mod.id) + '] ' + mod.path + ' ***/\n\n';
     var modOpener = '/***/[function (require, module, exports) {\n';
     var modCloser = '\n\n\n/***/},';
 
@@ -29,7 +33,7 @@ function wrapModule (mod, pack, options) {
         var m = pack[abs];
         var coord = m ? m.id : 0;
         if (options.obscure) {
-            var matchReq = new RegExp('require\\([\\\'\\"]' + rel + '[\\\'\\"]\\)', 'g');
+            var matchReq = new RegExp('require\\([\\\'\\"]' + escapeRegExp(rel) + '[\\\'\\"]\\)', 'g');
             mod.contents = mod.contents.replace(matchReq, 'require(' + coord + ')');
             map[coord] = coord;
         } else {
