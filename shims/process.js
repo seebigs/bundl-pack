@@ -4,7 +4,13 @@ module.exports = {
     browser: true,
     cwd: function(){ return '/'; },
     env: {},
-    exit: function (code) { throw new Error('process.exit ' + code); },
+    exit: function (code) {
+        if (typeof process === 'object' && typeof process.exit === 'function') {
+            process.exit(code);
+        } else {
+            throw new Error('process.exit ' + code);
+        }
+    },
     nextTick: function () {
         var args = [].slice.call(arguments);
         var callback = args.shift();
