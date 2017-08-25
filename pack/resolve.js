@@ -33,6 +33,11 @@ var externals = {
 };
 
 function resolve (str, fromFile, paths) {
+    var fromFileSplit = fromFile.split('#');
+    if (fromFileSplit.pop() === 'entry') {
+        fromFile = fromFileSplit.join('#');
+    }
+
     var builtin = builtins[str];
     if (builtin) {
         return {
@@ -54,7 +59,7 @@ function resolve (str, fromFile, paths) {
         };
     }
 
-    return seebigsResolve.apply(this, arguments);
+    return seebigsResolve.call(this, str, fromFile, paths);
 }
 
 module.exports = resolve;
