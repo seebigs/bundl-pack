@@ -1,10 +1,12 @@
 
-var featherTest = require('feather-test');
+var FeatherTest = require('feather-test');
 var utils = require('seebigs-utils');
 
-featherTest.queue('./specs/shims.spec.js');
+var myTest = new FeatherTest({
+    specs: './specs/shims.spec.js',
+});
 
-featherTest.run(function (err) {
+myTest.run(function (err) {
     if (!err) {
         console.log();
         utils.each(window.testValues, function (val, shimName) {

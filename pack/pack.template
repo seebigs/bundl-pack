@@ -1,6 +1,0 @@
-;(function(<%= globalsTop %>){
-<%= globalsFirst %>/**/require([
-<%= modules %>
-/**/]<%= requireAs %>);
-<%= requirer %>
-})(<%= globalsBottom %>);
