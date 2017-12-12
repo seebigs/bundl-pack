@@ -119,7 +119,7 @@ describe('CommonJS', function () {
     });
 
     describe('can be mocked', function (expect) {
-        var b = bundlPack({ paths: paths }).one(rMocked.contents, rMocked);
+        var b = bundlPack({ paths: paths, obscure: true }).one(rMocked.contents, rMocked);
         eval(b.contents);
         expect(window.testValue).toBe('mocked,css,html,json,less,path');
     });
