@@ -35,6 +35,8 @@ function wrapModule (mod, pack, options) {
         if (options.obscure) {
             var matchReq = new RegExp('require\\([\\\'\\"]' + escapeRegExp(rel) + '[\\\'\\"]\\)', 'g');
             mod.contents = mod.contents.replace(matchReq, 'require(' + coord + ')');
+            var matchReqMock = new RegExp('require\\.cache\\.mock\\([\\\'\\"]' + escapeRegExp(rel) + '[\\\'\\"],', 'g');
+            mod.contents = mod.contents.replace(matchReqMock, 'require.cache.mock(' + coord + ',');
             map[coord] = coord;
         } else {
             map[rel] = coord;
