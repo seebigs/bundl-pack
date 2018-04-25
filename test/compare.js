@@ -1,10 +1,11 @@
-
+var $AST = require('../../parsetree-js'); // FIXME
 var bundlpack = require('../index.js');
 var bytes = require('bytes');
 var consoleTable = require('console.table');
+var del = require('del');
 var fs = require('fs');
 var lessProcessor = require('bundl-pack-less');
-var ugly = require('uglify-js');
+var uglify = require('uglify-js');
 var utils = require('seebigs-utils');
 
 var args = utils.args();
@@ -18,18 +19,20 @@ var autoInject = !!args.autoInject;
 var r = {
     name: 'my_bundle.js',
     src: '../fixtures/commonjs/entry.js',
-    contents: entryContents,
-    sourcemaps: []
+    contents: {
+        parsed: new $AST(entryContents),
+    },
+    sourcemaps: [],
 };
 
+/* CLEAR */
+del.sync([__dirname + '/compare/']);
 
 /* BROWSERIFY */
 require('./compare_browserify.js')(entryPath, outputPath, autoInject);
 
-
 /* WEBPACK */
-require('./compare_webpack.js')(entryPath, outputPath, autoInject);
-
+// require('./compare_webpack.js')(entryPath, outputPath, autoInject);
 
 /* BUNDLPACK */
 var bp = bundlpack({
@@ -41,19 +44,20 @@ var bp = bundlpack({
         autoInject: !!autoInject
     },
     less: lessProcessor()
-}).one(r.contents, r);
+}).exec.call({}, r);
 
 function minify (contents) {
     var opts = {
         charset: 'utf8',
         fromString: true
     };
-    return ugly.minify(contents, opts).code;
+    return uglify.minify(contents, opts).code;
 }
 
 var outname = 'bundlpack';
-utils.writeFile(__dirname + '/compare/' + outname + '.js', bp.contents, done);
-utils.writeFile(__dirname + '/compare/' + outname + '.min.js', minify(bp.contents), done);
+var contents = bp.contents.parsed.generate();
+utils.writeFile(__dirname + '/compare/' + outname + '.js', contents, done);
+utils.writeFile(__dirname + '/compare/' + outname + '.min.js', minify(contents), done);
 
 
 /* COMPARE */

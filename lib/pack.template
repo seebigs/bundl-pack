@@ -3,4 +3,6 @@
 <%= modules %>
 ]<%= requireAs %>);
 <%= requirer %>
-})(<%= globalsBottom %>);
+}).apply(this, (function(_){
+return [<%= globalsBottom %>];
+})(<%= globalVarFinder %>));

@@ -1,3 +1,4 @@
+var $AST = require('../../../parsetree-js'); // FIXME
 var bundlPack = require('../../index.js');
 var nodeAsBrowser = require('node-as-browser');
 var utils = require('seebigs-utils');
@@ -10,22 +11,24 @@ globalFoo = 'bar';
 
 describe('shims', function () {
 
+    var shimsFile = utils.readFile(__dirname + '/../fixtures/_shims.js');
     var r = {
         name: 'shims_bundle.js',
         src: '../fixtures/_shims.js',
-        contents: utils.readFile(__dirname + '/../fixtures/_shims.js'),
-        sourcemaps: []
+        contents: {
+            parsed: new $AST(shimsFile),
+        },
+        sourcemaps: [],
     };
 
     describe('all work properly', function (expect) {
-        var bp = bundlPack({}).one(r.contents, r);
-        eval(bp.contents);
+        var bp = bundlPack({}).exec.call({}, r);
+        eval(bp.contents.parsed.generate());
 
         expect(window.testValues.buffer).toBe(Buffer.poolSize, 'buffer');
         expect(window.testValues.crypto).toBe('a9993e364706816aba3e25717850c26c9cd0d89d', 'crypto');
         expect(window.testValues.domain).toBe('function', 'domain');
         expect(window.testValues.events).toBe('function', 'events');
-        expect(window.testValues.fetch).toBe([ 'default', 'Promise', 'Response', 'Headers', 'Request' ], 'fetch');
         expect(window.testValues.http).toBe([ 'get', 'request', 'setDefaultProtocol' ], 'http');
         expect(window.testValues.https).toBe([ 'get', 'request', 'setDefaultProtocol' ], 'https');
         expect(window.testValues.indexof).toBe(3, 'indexof');

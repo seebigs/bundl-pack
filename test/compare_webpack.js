@@ -21,7 +21,7 @@ function makeWebpackedFiles (entryPath, outputPath, autoInject) {
                     { test: /\.json$/, loader: 'json' }
                 ]
             },
-            quiet: true
+            // quiet: true
 
         })).on('error', function (err) {
             console.log(err);

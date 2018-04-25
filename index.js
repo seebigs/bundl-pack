@@ -3,9 +3,9 @@
  */
 
 var constructEntryFile = require('./lib/construct_entry_file.js');
-var extractEntryModule = require('./lib/extract_entry_module.js');
 var findModules = require('./lib/find_modules.js');
 var packModules = require('./lib/pack_modules.js');
+var requirer = require('./lib/requirer.js');
 var utils = require('seebigs-utils');
 
 var topWrapperHeight = 4;
@@ -14,23 +14,19 @@ function bundlPack (options) {
     var opts = Object.assign({}, options);
 
     /**
-     * @param {String} contents the initial contents of the file being processed
-     * @option {Object} r the resource object being processed
+     * @param {Object} r the resource object being processed
+     *   (must contain r.contents.parsed as ParseTree instance)
      */
     function exec (r) {
         var _this = this;
         var startingLines = _this.isBundl ? _this.LINES || 1 : 1;
         var initialLines = startingLines + topWrapperHeight + 1;
-        var initialFound = {
-            modules: {},
-            requireAs: {},
-        };
 
-        if (r.contents && r.contents.tree) {
-            var entryFile = constructEntryFile(r);
-            var found = findModules(initialFound, entryFile, opts, true, initialLines);
-            var entryMod = extractEntryModule(found, entryFile);
-            var packed = packModules(found, entryMod, opts);
+        if (r.contents && r.contents.string) {
+            var entryFile = constructEntryFile(r, r.contents.string);
+            var found = findModules(entryFile, opts, initialLines);
+            entryFile.relMap = found.relMap;
+            var packed = packModules(found, entryFile, opts);
 
             if (packed.insertExtraLines) {
                 r.sourcemaps.forEach(function (smap) {
@@ -49,8 +45,8 @@ function bundlPack (options) {
 
             });
 
-            // parse new AST from our packaged string and save into resource contents
-            r.contents.tree.parse(packed.code);
+            // replace contents with our packaged code
+            r.contents.string = packed.code;
         }
 
         return r;
@@ -58,11 +54,13 @@ function bundlPack (options) {
 
     return {
         name: 'pack',
-        stage: 'parsed',
+        stage: 'stringy',
         ext: ['js'],
         exec: exec,
     };
 
 }
+
+bundlPack.requirer = requirer;
 
 module.exports = bundlPack;

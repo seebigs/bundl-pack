@@ -1,8 +1,8 @@
 /**
  * https://www.npmjs.com/package/request ported to work in browsers
+ * Requires window.fetch
  */
 
-var fetch = require('fetch');
 var Url = window.URL || window.webkitURL;
 
 function parseOptions (args) {
