@@ -1,6 +1,6 @@
 {
   "name": "bundl-pack",
-  "version": "0.6.6",
+  "version": "1.0.0",
   "description": "Package 'required' and 'imported' dependencies",
   "main": "index.js",
   "scripts": {
