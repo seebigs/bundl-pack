@@ -1,0 +1,8 @@
+!(function(<%= globalsTop %>){
+<%= globalsFirst %>require([
+<%= modules %>
+]<%= requireAs %>);
+<%= requirer %>
+}).apply(this, (function(_){
+return [<%= globalsBottom %>];
+})(<%= globalVarFinder %>));

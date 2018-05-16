@@ -1,13 +1,14 @@
+var each = require('seebigs-each');
+var FeatherTest = require('feather-test');
 
-var featherTest = require('feather-test');
-var utils = require('seebigs-utils');
+var myTest = new FeatherTest({
+    specs: './specs/shims.spec.js',
+});
 
-featherTest.queue('./specs/shims.spec.js');
-
-featherTest.run(function (err) {
+myTest.run(function (err) {
     if (!err) {
         console.log();
-        utils.each(window.testValues, function (val, shimName) {
+        each(window.testValues, function (val, shimName) {
             console.log('   ' + shimName);
         });
     }

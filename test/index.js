@@ -1,6 +1,11 @@
 
-var featherTest = require('feather-test');
+var FeatherTest = require('feather-test');
 
-featherTest.queue('./specs/pack.commonjs.spec.js');
+var myTest = new FeatherTest({
+    specs: [
+        './specs/pack.commonjs.spec.js',
+        './specs/standalone.spec.js',
+    ],
+});
 
-featherTest.run();
+myTest.run();

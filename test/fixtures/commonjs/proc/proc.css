@@ -3,4 +3,5 @@
 body {
     margin: 0;
     background: #f66;
+    content: '\e800';
 }
