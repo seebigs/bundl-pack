@@ -4,8 +4,8 @@ var nodeAsBrowser = require('node-as-browser');
 var path = require('path');
 var utils = require('seebigs-utils');
 
-var babelProcessor = require('../../../bundl-pack-babel'); // FIXME
-var lessProcessor = require('../../../bundl-pack-less');  // FIXME
+var babelProcessor = require('bundl-pack-babel');
+var lessProcessor = require('bundl-pack-less');
 
 // provide browser constructs like document and window
 nodeAsBrowser.init(global);
@@ -18,6 +18,18 @@ function getRequiredFiles (name) {
     };
 }
 
+function mockContents(c) {
+    var _c = c;
+    return {
+        getString: function () {
+            return _c;
+        },
+        set: function (newC) {
+            _c = newC;
+        },
+    };
+}
+
 describe('CommonJS', function () {
 
     var entryFile = utils.readFile('./test/fixtures/commonjs/entry.js');
@@ -27,64 +39,52 @@ describe('CommonJS', function () {
     var paths = ['test/fixtures/commonjs'];
     var fixturesPath = path.resolve(__dirname + '/../fixtures/commonjs/');
     var expectedTestValue = '{' +
-        '"css":"body{margin:0;background:#f66}",' +
+        '"css":"body{margin:0;background:#f66;content:\'\\\\e800\'}",' +
         '"html":"<div><h1 id=\\"willy\\" class=\\"wonka\\">Charlie\'s Friend</h1></div>",' +
         '"json":{"foo":["bar"]},' +
-        '"less":".and .more{color:green}.foo{color:#00f}.foo .bar{color:red}",' +
+        '"less":".and .more{color:green}.foo{color:#00f}.foo .bar{color:red;content:\'\\\\02715\'}",' +
         '"path":{"sep":"/","delimiter":":"}' +
     '}';
 
     var r = {
         name: 'my_bundle.js',
         src: '../fixtures/commonjs/entry.js',
-        contents: {
-            string: entryFile,
-        },
+        contents: mockContents(entryFile),
         sourcemaps: [],
     };
 
     var r2 = {
         name: 'my_bundle.js',
         src: '../fixtures/commonjs/entry.js',
-        contents: {
-            string: entryFile,
-        },
+        contents: mockContents(entryFile),
         sourcemaps: [],
     };
 
     var rBabel = {
         name: 'my_bundle_es.js',
         src: '../fixtures/commonjs/entry_es.js',
-        contents: {
-            string: entryFileES,
-        },
+        contents: mockContents(entryFileES),
         sourcemaps: [],
     };
 
     var rMocked = {
         name: 'my_bundle_mocked.js',
         src: '../fixtures/commonjs/entry_mocked.js',
-        contents: {
-            string: entryFileMocked,
-        },
+        contents: mockContents(entryFileMocked),
         sourcemaps: [],
     };
 
     var rCached = {
         name: 'my_bundle.js',
         src: '../fixtures/commonjs/cache_get.js',
-        contents: {
-            string: entryFileCached,
-        },
+        contents: mockContents(entryFileCached),
         sourcemaps: [],
     };
 
     var rAuto = {
         name: 'my_bundle.js',
         src: '../fixtures/commonjs/entry.js',
-        contents: {
-            string: entryFile,
-        },
+        contents: mockContents(entryFile),
         sourcemaps: [],
     };
 
@@ -105,7 +105,7 @@ describe('CommonJS', function () {
         }).exec.call(fakeBundl, r);
 
         describe('it finds and correctly bundles all dependencies', function (expect) {
-            eval(bp.contents.string);
+            eval(bp.contents.getString());
             expect(JSON.stringify(global.testValue)).toBe(expectedTestValue);
         });
 
@@ -146,19 +146,19 @@ describe('CommonJS', function () {
             less: lessProcessor,
             js: babelProcessor,
         }).exec.call({}, rBabel);
-        eval(bp.contents.string);
+        eval(bp.contents.getString());
         expect(JSON.stringify(global.testValue)).toBe(expectedTestValue);
     });
 
     describe('can be mocked', function (expect) {
         var bp = bundlPack({ paths: paths }).exec.call({}, rMocked);
-        eval(bp.contents.string);
+        eval(bp.contents.getString());
         expect(global.testValue).toBe('mocked,css,html,json,less,path');
     });
 
     describe('can be cached', function (expect) {
         var bp = bundlPack({ paths: paths }).exec.call({}, rCached);
-        eval(bp.contents.string);
+        eval(bp.contents.getString());
         expect(global.testValue).toBe('mutated');
     });
 
@@ -176,7 +176,7 @@ describe('CommonJS', function () {
                 processor: lessProcessor,
             },
         }).exec.call({}, rAuto);
-        var contents = bp.contents.string;
+        var contents = bp.contents.getString();
         expect(contents.indexOf('requireAs') !== -1).toBe(false, '(bundle still includes requireAs)');
     });
 
@@ -187,7 +187,7 @@ describe('CommonJS', function () {
                 processor: lessProcessor,
             },
         }).exec.call({}, r2);
-        var contents = bp.contents.string;
+        var contents = bp.contents.getString();
         expect(contents.indexOf('requireAs') !== -1).toBe(true, '(bundle is missing requireAs)');
     });
 

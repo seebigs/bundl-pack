@@ -4,7 +4,8 @@
   "description": "Package 'required' and 'imported' dependencies",
   "main": "index.js",
   "scripts": {
-    "test": "node test",
+    "test": "npm run lint && node test",
+    "lint": "eslint ./lib ./index",
     "compare": "node test/compare"
   },
   "repository": {
@@ -27,20 +28,21 @@
     "lodash.template": "^4.4.0",
     "os-browserify": "^0.3.0",
     "path-browserify": "0.0.0",
+    "seebigs-each": "^1.1.0",
     "seebigs-resolve": "^1.3.1",
-    "seebigs-utils": "^1.2.1",
     "stream-browserify": "^2.0.1",
     "string_decoder": "^1.0.3",
     "vm-browserify": "1.0.1"
   },
   "devDependencies": {
-    "browserify": "^15.1.0",
+    "browserify": "^16.2.2",
     "browserify-css": "^0.14.0",
-    "bundl-pack-babel": "^0.1.0",
-    "bundl-pack-less": "^0.2.0",
+    "bundl-pack-babel": "^1.0.0",
+    "bundl-pack-less": "^1.0.0",
     "bytes": "^3.0.0",
     "console.table": "^0.10.0",
     "css-loader": "^0.28.7",
+    "eslint": "^4.19.1",
     "feather-test": "^4.0.0",
     "gulp": "^3.9.1",
     "gulp-rename": "^1.2.2",
@@ -51,6 +53,7 @@
     "less-loader": "^4.0.2",
     "node-as-browser": "^1.3.2",
     "node-lessify": "^0.1.4",
+    "seebigs-utils": "^1.2.1",
     "style-loader": "^0.21.0",
     "vinyl-source-stream": "^2.0.0",
     "webpack-stream": "^4.0.0"

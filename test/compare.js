@@ -1,4 +1,3 @@
-var $AST = require('../../parsetree-js'); // FIXME
 var bundlpack = require('../index.js');
 var bytes = require('bytes');
 var consoleTable = require('console.table');
@@ -16,12 +15,22 @@ var entryContents = utils.readFile(entryPath);
 var paths = ['test/fixtures/commonjs'];
 var autoInject = !!args.autoInject;
 
+function mockContents(c) {
+    var _c = c;
+    return {
+        getString: function () {
+            return _c;
+        },
+        set: function (newC) {
+            _c = newC;
+        },
+    };
+}
+
 var r = {
     name: 'my_bundle.js',
     src: '../fixtures/commonjs/entry.js',
-    contents: {
-        parsed: new $AST(entryContents),
-    },
+    contents: mockContents(entryContents),
     sourcemaps: [],
 };
 
@@ -43,7 +52,7 @@ var bp = bundlpack({
     json: {
         autoInject: !!autoInject
     },
-    less: lessProcessor()
+    less: lessProcessor,
 }).exec.call({}, r);
 
 function minify (contents) {
@@ -55,7 +64,7 @@ function minify (contents) {
 }
 
 var outname = 'bundlpack';
-var contents = bp.contents.parsed.generate();
+var contents = bp.contents.getString();
 utils.writeFile(__dirname + '/compare/' + outname + '.js', contents, done);
 utils.writeFile(__dirname + '/compare/' + outname + '.min.js', minify(contents), done);
 

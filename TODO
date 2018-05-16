@@ -1,7 +1,9 @@
 
 find deps for es6 imports https://www.npmjs.com/package/detective-es6
 
-compare against webpack is somehow broken
+compare against webpack
+
+compare against parceljs https://parceljs.org/getting_started.html
 
 compare against rollup https://github.com/rollup/rollup/wiki/JavaScript-API
 

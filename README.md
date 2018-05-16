@@ -11,24 +11,39 @@ Default processors automatically handle the requiring/importing of the following
 
 ---
 
+# Use as a plugin
+
 ```
 $ npm install --save-dev bundl-pack
 ```
 
 ```js
-var bundl = require('bundl');
+var Bundl = require('bundl');
 var pack = require('bundl-pack');
 var write = require('bundl-write');
 
 var packOptions = {
-    paths: ['/src/javascripts']
+    paths: ['/src/javascripts'],
 };
 
-bundl('entry.js')
+new Bundl('entry.js')
     .then(pack(packOptions))
     .then(write())
     .go();
 ```
+
+# Use standalone
+
+If you want to just pass a String of contents and return the packaged result, you can do the following:
+
+```js
+var pack = require('bundl-pack');
+var fileContents = '...';
+var packed = pack.create(fileContents, options);
+console.log(packed);
+```
+
+---
 
 # Options
 
@@ -38,7 +53,7 @@ An array of paths to use when resolving required/imported files
 {
     paths: [
         'src/javascripts',
-        'src/stylesheets'
+        'src/stylesheets',
     ]
 }
 ```
@@ -47,7 +62,7 @@ An array of paths to use when resolving required/imported files
 Display a comment at the top of every module showing the full module path. Defaults to true.
 ```js
 {
-    leadingComments: false
+    leadingComments: false,
 }
 ```
 
@@ -55,7 +70,7 @@ Display a comment at the top of every module showing the full module path. Defau
 Hide relative path names from require statements (`require('../path/file.js')` becomes `require(2)`)
 ```js
 {
-    obscure: true
+    obscure: true,
 }
 ```
 
@@ -68,31 +83,19 @@ var lessProcessor = require('bundl-pack-less');
 {
     css: {
         compatibility: 'ie8',
-        autoInject: false
+        autoInject: false,
     },
     html: {
-        removeComments: false
+        removeComments: false,
     },
     json: {
-        autoInject: false
+        autoInject: false,
     },
     less: lessProcessor({
-        relativeUrls: false
+        relativeUrls: false,
     }),
     js: babelProcessor({
-        presets: ['es2015']
-    })
+        presets: ['es2015'],
+    }),
 }
-```
-
-# Stand-Alone Usage
-
-If you want to package files manually, you can do the following:
-
-```js
-var pack = require('bundl-pack');
-
-var packed = pack(options).one(entryFileContents);
-
-console.log(packed.contents);
 ```

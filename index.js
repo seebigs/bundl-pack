@@ -2,51 +2,60 @@
  * Bundl plugin to package 'required' dependencies
  */
 
-var constructEntryFile = require('./lib/construct_entry_file.js');
-var findModules = require('./lib/find_modules.js');
-var packModules = require('./lib/pack_modules.js');
-var requirer = require('./lib/requirer.js');
-var utils = require('seebigs-utils');
+var each = require('seebigs-each');
+var getEntryModule = require('./lib/entry');
+var findModules = require('./lib/find');
+var packModules = require('./lib/pack');
+var requirer = require('./lib/pack/requirer.js');
 
-var topWrapperHeight = 4;
-
-function bundlPack (options) {
+function bundlPack(options) {
     var opts = Object.assign({}, options);
+
+    var modulesCache = {};
 
     /**
      * @param {Object} r the resource object being processed
-     *   (must contain r.contents.parsed as ParseTree instance)
+     *   (must contain r.contents)
      */
-    function exec (r) {
+    function exec(r) {
         var _this = this;
         var startingLines = _this.isBundl ? _this.LINES || 1 : 1;
-        var initialLines = startingLines + topWrapperHeight + 1;
+        var cumulativeLines = startingLines + 5;
+        var requireAs = {};
 
-        if (r.contents && r.contents.string) {
-            var entryFile = constructEntryFile(r, r.contents.string);
-            var found = findModules(entryFile, opts, initialLines);
-            entryFile.relMap = found.relMap;
-            var packed = packModules(found, entryFile, opts);
+        if (r.changed) {
+            modulesCache = {};
+        }
 
-            if (packed.insertExtraLines) {
-                r.sourcemaps.forEach(function (smap) {
-                    smap.generated.line += packed.insertExtraLines;
-                });
-            }
+        if (r.contents) {
+            var contentsString = r.contents.getString();
+            if (contentsString) {
+                var entryMod = getEntryModule(r, contentsString, opts, cumulativeLines);
+                var found = findModules(entryMod, requireAs, opts, [], modulesCache, cumulativeLines);
+                found.requireAs = requireAs;
+                entryMod.relMap = found.relMap;
+                var packed = packModules(found, entryMod, opts);
 
-            utils.each(found.modules, function (mod, modPath) {
-
-                // map dependency to Bundl
-                if (_this.isBundl) {
-                    _this.mapDependency.call(_this, r.name, modPath);
+                if (packed.insertExtraLines) {
+                    r.sourcemaps.forEach(function (smap) {
+                        smap.generated.line += packed.insertExtraLines;
+                    });
                 }
-                // add sourcemap to resource
-                r.sourcemaps.push(mod.sourcemap);
 
-            });
+                each(found.modules, function (mod, modPath) {
 
-            // replace contents with our packaged code
-            r.contents.string = packed.code;
+                    // map dependency to Bundl
+                    if (_this.isBundl) {
+                        _this.mapDependency.call(_this, r.name, modPath);
+                    }
+                    // add sourcemap to resource
+                    r.sourcemaps.push(mod.sourcemap);
+
+                });
+
+                // replace contents with our packaged code
+                r.contents.set(packed.code);
+            }
         }
 
         return r;
@@ -61,6 +70,24 @@ function bundlPack (options) {
 
 }
 
+function create(contents, options) {
+    var _contents = contents;
+    var r = {
+        contents: {
+            getString: function () {
+                return _contents;
+            },
+            set: function (newContents) {
+                _contents = newContents;
+            },
+        },
+        sourcemaps: [],
+    };
+    bundlPack(options).exec(r);
+    return r.contents.getString();
+}
+
+bundlPack.create = create;
 bundlPack.requirer = requirer;
 
 module.exports = bundlPack;
