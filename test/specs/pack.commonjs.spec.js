@@ -89,7 +89,7 @@ describe('CommonJS', function () {
     };
 
     describe('require gets dependencies of all types', function () {
-        global.testValue = null;
+        window.testValue = null;
 
         var mappedDeps = [];
         var fakeBundl = {
@@ -106,7 +106,7 @@ describe('CommonJS', function () {
 
         describe('it finds and correctly bundles all dependencies', function (expect) {
             eval(bp.contents.getString());
-            expect(JSON.stringify(global.testValue)).toBe(expectedTestValue);
+            expect(JSON.stringify(window.testValue)).toBe(expectedTestValue);
         });
 
         describe('it builds a sourcemaps object', function (expect) {
@@ -139,7 +139,7 @@ describe('CommonJS', function () {
     });
 
     describe('handles babel as processor', function (expect) {
-        global.testValue = null;
+        window.testValue = null;
         var bp = bundlPack({
             obscure: false,
             paths: paths,
@@ -147,19 +147,19 @@ describe('CommonJS', function () {
             js: babelProcessor,
         }).exec.call({}, rBabel);
         eval(bp.contents.getString());
-        expect(JSON.stringify(global.testValue)).toBe(expectedTestValue);
+        expect(JSON.stringify(window.testValue)).toBe(expectedTestValue);
     });
 
     describe('can be mocked', function (expect) {
         var bp = bundlPack({ paths: paths }).exec.call({}, rMocked);
         eval(bp.contents.getString());
-        expect(global.testValue).toBe('mocked,css,html,json,less,path');
+        expect(window.testValue).toBe('mocked,css,html,json,less,path');
     });
 
     describe('can be cached', function (expect) {
         var bp = bundlPack({ paths: paths }).exec.call({}, rCached);
         eval(bp.contents.getString());
-        expect(global.testValue).toBe('mutated');
+        expect(window.testValue).toBe('mutated');
     });
 
     describe('respects when autoInject is false', function (expect) {

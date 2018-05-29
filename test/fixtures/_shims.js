@@ -1,7 +1,7 @@
 
 var Events = require('events');
 
-global.testValues = {
+window.testValues = {
     buffer: require('buffer').poolSize,
     // crypto: require('crypto').createHash('sha1').update('abc').digest('hex'),
     domain: typeof require('domain').createDomain,
