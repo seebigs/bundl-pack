@@ -4,7 +4,7 @@
 
 *Supports ES6 imports via [bundl-pack-babel](https://github.com/seebigs/bundl-pack-babel)*
 
-Default processors automatically handle the requiring/importing of the following extensions. (Default behavior can be modified or overriden, and [plugins already exist](https://github.com/seebigs/bundl/wiki/Popular-Plugins#modules--dependencies) to allow easy importing of many other popular file types)
+Default processors automatically handle the requiring/importing of the following extensions. (Default behavior can be modified or overridden, and [plugins already exist](https://github.com/seebigs/bundl/wiki/Popular-Plugins#modules--dependencies) to allow easy importing of many other popular file types)
 * json
 * css
 * html
@@ -47,19 +47,16 @@ console.log(packed);
 
 # Options
 
-## .paths
-An array of paths to use when resolving required/imported files
+## .allowCircular
+By default, circular dependencies will throw an error. Set this option to `true` to suppress this error and continue packaging anyways.
 ```js
 {
-    paths: [
-        'src/javascripts',
-        'src/stylesheets',
-    ]
+    allowCircular: true,
 }
 ```
 
 ## .leadingComments
-Display a comment at the top of every module showing the full module path. Defaults to true.
+Display a comment at the top of every module showing the full module path. Defaults to `true`.
 ```js
 {
     leadingComments: false,
@@ -71,6 +68,17 @@ Hide relative path names from require statements (`require('../path/file.js')` b
 ```js
 {
     obscure: true,
+}
+```
+
+## .paths
+An array of paths to use when resolving required/imported files
+```js
+{
+    paths: [
+        'src/javascripts',
+        'src/stylesheets',
+    ]
 }
 ```
 
