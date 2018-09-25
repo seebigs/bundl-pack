@@ -1,4 +1,5 @@
 !(function(<%= globalsTop %>){
+<%= onFirstRequire %>
 <%= globalsFirst %>require([
 <%= modules %>
 ]<%= requireAs %>);
