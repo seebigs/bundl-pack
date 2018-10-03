@@ -55,6 +55,14 @@ By default, circular dependencies will throw an error. Set this option to `true`
 }
 ```
 
+## .exitProcessOnError
+A message will always be printed if a syntax error is encountered while packing. This option controls whether to halt the process or continue. Defaults to `true`.
+```js
+{
+    exitProcessOnError: false,
+}
+```
+
 ## .leadingComments
 Display a comment at the top of every module showing the full module path. Defaults to `true`.
 ```js
