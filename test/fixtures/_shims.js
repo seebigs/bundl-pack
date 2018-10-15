@@ -2,7 +2,8 @@
 var Events = require('events');
 
 window.testValues = {
-    buffer: require('buffer').poolSize,
+    Buffer: typeof Buffer.alloc,
+    buffer: typeof require('buffer').Buffer.alloc,
     // crypto: require('crypto').createHash('sha1').update('abc').digest('hex'),
     domain: typeof require('domain').createDomain,
     events: typeof new Events().emit,

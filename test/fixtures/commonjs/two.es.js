@@ -1,3 +1,5 @@
+import * as unused from './sub/unused.js';
+
 export function thing () {
     return {
         css: require('./proc/proc.css'),

@@ -1,3 +1,6 @@
+var nodeAsBrowser = require('node-as-browser');
+nodeAsBrowser.init(global);
+
 var each = require('seebigs-each');
 var FeatherTest = require('feather-test');
 

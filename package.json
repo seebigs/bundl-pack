@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "npm run lint && node test",
-    "lint": "eslint ./lib ./index",
+    "lint": "eslint ./lib ./index.js",
     "compare": "node test/compare"
   },
   "repository": {
@@ -37,8 +37,9 @@
   "devDependencies": {
     "browserify": "^16.2.2",
     "browserify-css": "^0.14.0",
+    "bundl": "^1.1.0",
     "bundl-pack-babel": "^1.0.0",
-    "bundl-pack-less": "^1.0.0",
+    "bundl-pack-less": "^1.0.1",
     "bytes": "^3.0.0",
     "console.table": "^0.10.0",
     "css-loader": "^0.28.7",

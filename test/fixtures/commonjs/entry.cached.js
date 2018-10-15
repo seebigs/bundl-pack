@@ -1,3 +1,3 @@
 var c = require('cachee.js');
-require('cache_mutate.js');
+require('cache.mutate.js');
 window.testValue = c.foo;
