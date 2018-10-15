@@ -18,7 +18,7 @@ describe('require gets dependencies of all types', function (assert, done) {
         '"html":"<div><h1 id=\\"willy\\" class=\\"wonka\\">Charlie\'s Friend</h1></div>",' +
         '"json":{"foo":["bar"]},' +
         '"less":".and .more{color:green}.foo{color:#00f}.foo .bar{color:red;content:\'\\\\02715\'}",' +
-        '"path":{"sep":"/","delimiter":":"}' +
+        '"path":"path"' +
     '}';
 
     const mappedDeps = [];
@@ -46,7 +46,7 @@ describe('require gets dependencies of all types', function (assert, done) {
 
             describe('it builds a sourcemaps object', function (expect) {
                 expect(myBundle.sourcemaps.length).toBe(9);
-                expect(myBundle.sourcemaps[myBundle.sourcemaps.length - 1].generated.line).toBe(313);
+                expect(myBundle.sourcemaps[myBundle.sourcemaps.length - 1].generated.line).toBe(618);
             });
 
             describe('it maps dependencies to Bundl', function (expect) {

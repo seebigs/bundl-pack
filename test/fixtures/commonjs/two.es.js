@@ -6,6 +6,6 @@ export function thing () {
         html: require('./proc/proc.html'),
         json: require('./proc/proc.json'),
         less: require('./proc/proc.less'),
-        path: require('path')
+        path: typeof require('path').resolve ? 'path' : 'invalid',
     };
 };

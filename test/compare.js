@@ -15,11 +15,12 @@ const entryPath = './test/fixtures/commonjs/entry.js';
 const autoInject = !!args.autoInject;
 
 function minify(contents) {
-    const opts = {
-        charset: 'utf8',
-        fromString: true
-    };
-    return uglify.minify(contents, opts).code;
+    const uglified = uglify.minify(contents, {});
+    if (uglified.error) {
+        throw uglified.error;
+    } else {
+        return uglified.code;
+    }
 }
 
 /* CLEAR */

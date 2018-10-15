@@ -20,7 +20,7 @@ describe('works with es6 and babel processor', function (assert, done) {
         '"html":"<div><h1 id=\\"willy\\" class=\\"wonka\\">Charlie\'s Friend</h1></div>",' +
         '"json":{"foo":["bar"]},' +
         '"less":".and .more{color:green}.foo{color:#00f}.foo .bar{color:red;content:\'\\\\02715\'}",' +
-        '"path":{"sep":"/","delimiter":":"}' +
+        '"path":"path"' +
     '}';
 
     const mappedDeps = [];
