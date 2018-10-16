@@ -46,7 +46,7 @@ function bundlPack(opts) {
                 };
 
                 findDeps(store, contentsString, entryPath, options, function () {
-                    var packed = packModules(store, mapDependency, cumulativeLines, options);
+                    var packed = packModules(store, entryPath, mapDependency, cumulativeLines, options);
                     r.sourcemaps = packed.sourcemaps;
                     r.contents.set(packed.code);
                     done();

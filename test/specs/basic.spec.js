@@ -52,6 +52,7 @@ describe('require gets dependencies of all types', function (assert, done) {
             describe('it maps dependencies to Bundl', function (expect) {
                 const expectedDeps = [];
                 const files = [
+                    'entry.js',
                     'proc/proc.css',
                     'proc/proc.html',
                     'proc/proc.json',
@@ -59,13 +60,12 @@ describe('require gets dependencies of all types', function (assert, done) {
                     'sub/unused.js',
                     'sub/two.js',
                     'one.js',
-                    'entry.js',
                 ];
 
                 files.forEach(function (file) {
                     expectedDeps.push(fixturesPath + '/' + file);
                 });
-                expectedDeps.splice(4, 0, path.resolve('node_modules/path-browserify/index.js'));
+                expectedDeps.splice(5, 0, path.resolve('node_modules/path-browserify/index.js'));
 
                 expect(mappedDeps).toBe(expectedDeps);
             });

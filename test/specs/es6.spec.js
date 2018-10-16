@@ -54,6 +54,7 @@ describe('works with es6 and babel processor', function (assert, done) {
             describe('it maps dependencies to Bundl', function (expect) {
                 const expectedDeps = [];
                 const files = [
+                    'entry.es.js',
                     'sub/unused.js',
                     'proc/proc.css',
                     'proc/proc.html',
@@ -61,13 +62,12 @@ describe('works with es6 and babel processor', function (assert, done) {
                     'proc/proc.less',
                     'two.es.js',
                     'one.es.js',
-                    'entry.es.js',
                 ];
 
                 files.forEach(function (file) {
                     expectedDeps.push(fixturesPath + '/' + file);
                 });
-                expectedDeps.splice(5, 0, path.resolve('node_modules/path-browserify/index.js'));
+                expectedDeps.splice(6, 0, path.resolve('node_modules/path-browserify/index.js'));
 
                 expect(mappedDeps).toBe(expectedDeps);
             });
