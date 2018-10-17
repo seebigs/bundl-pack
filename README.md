@@ -5,6 +5,7 @@
 *Supports ES6 imports via [bundl-pack-babel](https://github.com/seebigs/bundl-pack-babel)*
 
 Default processors automatically handle the requiring/importing of the following extensions. (Default behavior can be modified or overridden, and [plugins already exist](https://github.com/seebigs/bundl/wiki/Popular-Plugins#modules--dependencies) to allow easy importing of many other popular file types)
+* js
 * json
 * css
 * html
@@ -39,8 +40,9 @@ If you want to just pass a String of contents and return the packaged result, yo
 ```js
 var pack = require('bundl-pack');
 var fileContents = '...';
-var packed = pack.create(fileContents, options);
-console.log(packed);
+pack.create(fileContents, options, function (packed) {
+    console.log(packed);
+});
 ```
 
 ---
