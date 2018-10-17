@@ -1,38 +1,27 @@
-var bundlpack = require('../index.js');
-var bytes = require('bytes');
-var consoleTable = require('console.table');
-var del = require('del');
-var fs = require('fs');
-var lessProcessor = require('bundl-pack-less');
-var uglify = require('uglify-js');
-var utils = require('seebigs-utils');
+const Bundl = require('bundl');
+const bundlPack = require('../index.js');
+const bytes = require('bytes');
+const consoleTable = require('console.table');
+const del = require('del');
+const fs = require('fs');
+const lessProcessor = require('bundl-pack-less');
+const uglify = require('uglify-js');
+const utils = require('seebigs-utils');
 
-var args = utils.args();
+const args = utils.args();
 
-var outputPath = './test/compare/';
-var entryPath = './test/fixtures/commonjs/entry.js';
-var entryContents = utils.readFile(entryPath);
-var paths = ['test/fixtures/commonjs'];
-var autoInject = !!args.autoInject;
+const outputPath = './test/compare/';
+const entryPath = './test/fixtures/commonjs/entry.js';
+const autoInject = !!args.autoInject;
 
-function mockContents(c) {
-    var _c = c;
-    return {
-        getString: function () {
-            return _c;
-        },
-        set: function (newC) {
-            _c = newC;
-        },
-    };
+function minify(contents) {
+    const uglified = uglify.minify(contents, {});
+    if (uglified.error) {
+        throw uglified.error;
+    } else {
+        return uglified.code;
+    }
 }
-
-var r = {
-    name: 'my_bundle.js',
-    src: '../fixtures/commonjs/entry.js',
-    contents: mockContents(entryContents),
-    sourcemaps: [],
-};
 
 /* CLEAR */
 del.sync([__dirname + '/compare/']);
@@ -44,34 +33,30 @@ require('./compare_browserify.js')(entryPath, outputPath, autoInject);
 // require('./compare_webpack.js')(entryPath, outputPath, autoInject);
 
 /* BUNDLPACK */
-var bp = bundlpack({
-    paths: paths,
-    css: {
-        autoInject: !!autoInject
-    },
-    json: {
-        autoInject: !!autoInject
-    },
-    less: lessProcessor,
-}).exec.call({}, r);
-
-function minify (contents) {
-    var opts = {
-        charset: 'utf8',
-        fromString: true
-    };
-    return uglify.minify(contents, opts).code;
-}
-
-var outname = 'bundlpack';
-var contents = bp.contents.getString();
-utils.writeFile(__dirname + '/compare/' + outname + '.js', contents, done);
-utils.writeFile(__dirname + '/compare/' + outname + '.min.js', minify(contents), done);
+new Bundl({ 'myBundle.js': './fixtures/commonjs/entry.js' })
+    .then(bundlPack({
+        css: {
+            autoInject: !!autoInject
+        },
+        json: {
+            autoInject: !!autoInject
+        },
+        less: {
+            autoInject: !!autoInject,
+            processor: lessProcessor,
+        },
+    }))
+    .go(function (resources) {
+        const myBundle = resources['myBundle.js'];
+        const contents = myBundle.contents.getString();
+        utils.writeFile(__dirname + '/compare/bundlpack.js', contents, done);
+        utils.writeFile(__dirname + '/compare/bundlpack.min.js', minify(contents), done);
+    });
 
 
 /* COMPARE */
 
-var filesWritten = 0;
+let filesWritten = 0;
 function done () {
     filesWritten++;
     if (filesWritten >= 2) {
@@ -80,10 +65,10 @@ function done () {
 }
 
 function displayComparisonTable () {
-    var finalFiles = utils.listFiles(__dirname + '/compare');
-    var toTable = [];
+    const finalFiles = utils.listFiles(__dirname + '/compare');
+    const toTable = [];
     finalFiles.forEach(function (ff) {
-        var stats = fs.statSync(ff);
+        const stats = fs.statSync(ff);
         toTable.push({
             bundle: ff.split('/').pop(),
             size: stats.size,

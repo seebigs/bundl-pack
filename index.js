@@ -2,63 +2,57 @@
  * Bundl plugin to package 'required' dependencies
  */
 
-var each = require('seebigs-each');
-var getEntryModule = require('./lib/entry');
-var findModules = require('./lib/find');
+var findDeps = require('./lib/find');
 var packModules = require('./lib/pack');
-var requirer = require('./lib/pack/requirer.js');
+var requirer = require('./lib/pack/requirer');
 
-function bundlPack(options) {
-    var opts = Object.assign({}, options);
+function bundlPack(opts) {
+    var options = Object.assign({}, opts);
 
-    var modulesCache = {};
+    var cache = {
+        modules: {},
+        requireAs: {},
+    };
 
     /**
      * @param {Object} r the resource object being processed
      *   (must contain r.contents)
      */
-    function exec(r) {
+    function exec(r, done) {
         var _this = this;
-        var startingLines = _this.isBundl ? _this.LINES || 1 : 1;
-        var cumulativeLines = startingLines + 5;
-        var requireAs = {};
 
+        // map a dependency for Bundl
+        function mapDependency(modPath) {
+            if (_this.isBundl) {
+                _this.mapDependency.call(_this, r.name, modPath);
+            }
+        }
+
+        // flush cached contents if the resource has changed
         if (r.changed) {
-            modulesCache = {};
+            cache.modules = {};
+            cache.requireAs = {};
         }
 
         if (r.contents) {
             var contentsString = r.contents.getString();
             if (contentsString) {
-                var entryMod = getEntryModule(r, contentsString, opts, cumulativeLines);
-                var found = findModules(entryMod, requireAs, opts, [], modulesCache, cumulativeLines);
-                found.requireAs = requireAs;
-                entryMod.relMap = found.relMap;
-                var packed = packModules(found, entryMod, opts);
+                var entryPath = (r.src || [])[0] || '#entry';
+                var cumulativeLines = (_this.isBundl ? _this.LINES || 1 : 1) + 5;
+                var store = {
+                    history: [],
+                    modules: cache.modules,
+                    requireAs: cache.requireAs,
+                };
 
-                if (packed.insertExtraLines) {
-                    r.sourcemaps.forEach(function (smap) {
-                        smap.generated.line += packed.insertExtraLines;
-                    });
-                }
-
-                each(found.modules, function (mod, modPath) {
-
-                    // map dependency to Bundl
-                    if (_this.isBundl) {
-                        _this.mapDependency.call(_this, r.name, modPath);
-                    }
-                    // add sourcemap to resource
-                    r.sourcemaps.push(mod.sourcemap);
-
+                findDeps(store, contentsString, entryPath, options, function () {
+                    var packed = packModules(store, entryPath, mapDependency, cumulativeLines, options);
+                    r.sourcemaps = packed.sourcemaps;
+                    r.contents.set(packed.code);
+                    done();
                 });
-
-                // replace contents with our packaged code
-                r.contents.set(packed.code);
             }
         }
-
-        return r;
     }
 
     return {
@@ -70,7 +64,7 @@ function bundlPack(options) {
 
 }
 
-function create(contents, options) {
+function create(contents, options, callback) {
     var _contents = contents;
     var r = {
         contents: {
@@ -83,8 +77,11 @@ function create(contents, options) {
         },
         sourcemaps: [],
     };
-    bundlPack(options).exec(r);
-    return r.contents.getString();
+    bundlPack(options).exec(r, function () {
+        if (typeof callback === 'function') {
+            callback(r.contents.getString(), r.sourcemaps);
+        }
+    });
 }
 
 bundlPack.create = create;
