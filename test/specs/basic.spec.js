@@ -45,8 +45,8 @@ describe('require gets dependencies of all types', function (assert, done) {
             });
 
             describe('it builds a sourcemaps object', function (expect) {
-                expect(myBundle.sourcemaps.length).toBe(9);
-                expect(myBundle.sourcemaps[myBundle.sourcemaps.length - 1].generated.line).toBe(618);
+                expect(myBundle.sourcemaps.length).toBe(10);
+                expect(myBundle.sourcemaps[myBundle.sourcemaps.length - 1].generated.line).toBe(624);
             });
 
             describe('it maps dependencies to Bundl', function (expect) {
@@ -59,6 +59,7 @@ describe('require gets dependencies of all types', function (assert, done) {
                     'proc/proc.less',
                     'sub/unused.js',
                     'sub/two.js',
+                    'sub/empty.js',
                     'one.js',
                 ];
 
