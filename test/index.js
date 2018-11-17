@@ -9,8 +9,8 @@ const myTest = new FeatherTest({
         './specs/es6.spec.js',
         './specs/cached.spec.js',
         './specs/mocked.spec.js',
+        './specs/output.spec.js',
         './specs/requireAs.spec.js',
-        './specs/sizes.spec.js',
         './specs/standalone.spec.js',
     ],
 });
