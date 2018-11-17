@@ -39,7 +39,7 @@ describe('requireAs works properly', function (assert, done) {
             const myBundle = resources['myBundle.js'];
             const contents = myBundle.contents.getString();
 
-            describe('respects when autoInject is false', function (expect) {
+            describe('respects when autoInject is NOT false', function (expect) {
                 expect(contents.indexOf('requireAs') !== -1).toBe(true, '(bundle is missing requireAs)');
             });
 

@@ -15,7 +15,7 @@ const entryPath = './test/fixtures/commonjs/entry.js';
 const autoInject = !!args.autoInject;
 
 function minify(contents) {
-    const uglified = uglify.minify(contents, {});
+    const uglified = uglify.minify(contents);
     if (uglified.error) {
         throw uglified.error;
     } else {
