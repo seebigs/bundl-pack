@@ -41,12 +41,12 @@ function bundlPack(opts) {
                 var cumulativeLines = (_this.isBundl ? _this.LINES || 1 : 1) + 5;
                 var store = {
                     history: [],
-                    modules: cache.modules,
-                    requireAs: cache.requireAs,
+                    modules: {},
+                    extensions: {},
                 };
 
-                findDeps(store, contentsString, entryPath, options, function () {
-                    var packed = packModules(store, entryPath, mapDependency, cumulativeLines, options);
+                findDeps(store, cache, contentsString, entryPath, options, function () {
+                    var packed = packModules(store, cache, entryPath, mapDependency, cumulativeLines, options);
                     r.sourcemaps = packed.sourcemaps;
                     r.contents.set(packed.code);
                     done();

@@ -38,7 +38,7 @@
     "browserify": "^16.2.3",
     "browserify-css": "^0.14.0",
     "bundl": "^1.1.0",
-    "bundl-pack-babel": "^1.0.0",
+    "bundl-pack-babel": "^2.0.0",
     "bundl-pack-less": "^1.0.1",
     "bytes": "^3.0.0",
     "console.table": "^0.10.0",
@@ -56,6 +56,7 @@
     "node-lessify": "^0.1.4",
     "seebigs-utils": "^1.2.1",
     "style-loader": "^0.23.0",
+    "uglify-js": "^3.4.9",
     "vinyl-source-stream": "^2.0.0",
     "webpack-stream": "^5.1.1"
   }
